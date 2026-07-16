@@ -21,3 +21,7 @@
 [2026-07-16T21:44:01.394Z] [INFO] Worker testgaps completed in 4ms
 [2026-07-16T21:46:01.386Z] [INFO] Starting worker: backup (1/2 concurrent)
 [2026-07-16T21:46:01.391Z] [INFO] Worker backup completed in 6ms
+[2026-07-16T21:48:01.406Z] [INFO] Starting worker: audit (1/2 concurrent)
+[2026-07-16T21:48:01.407Z] [INFO] Worker audit completed in 3ms
+[2026-07-16T21:48:01.437Z] [INFO] Starting worker: harness (1/2 concurrent)
+[2026-07-16T21:48:01.591Z] [INFO] Worker harness completed in 156ms
