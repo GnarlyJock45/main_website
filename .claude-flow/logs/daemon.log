@@ -14,3 +14,10 @@
 [2026-07-16T21:38:01.387Z] [INFO] Worker audit completed in 3ms
 [2026-07-16T21:40:01.378Z] [INFO] Starting worker: optimize (1/2 concurrent)
 [2026-07-16T21:40:01.379Z] [INFO] Worker optimize completed in 3ms
+[2026-07-16T21:42:01.377Z] [INFO] Starting worker: consolidate (1/2 concurrent)
+[2026-07-16T21:42:01.379Z] [INFO] Consolidate worker: distillation skipped (no-db)
+[2026-07-16T21:42:01.379Z] [INFO] Worker consolidate completed in 3ms
+[2026-07-16T21:44:01.392Z] [INFO] Starting worker: testgaps (1/2 concurrent)
+[2026-07-16T21:44:01.394Z] [INFO] Worker testgaps completed in 4ms
+[2026-07-16T21:46:01.386Z] [INFO] Starting worker: backup (1/2 concurrent)
+[2026-07-16T21:46:01.391Z] [INFO] Worker backup completed in 6ms

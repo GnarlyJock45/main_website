@@ -455,8 +455,12 @@ function agendaRowHTML(ev) {
 function renderHomeStats() {
   const balEl = document.querySelector('[data-bind="balance"]');
   const ptsEl = document.querySelector('[data-bind="points"]');
-  if (balEl) balEl.innerHTML = `${enDigits(Math.floor(state.balance))} <small>ر.س</small>`;
+  if (balEl) balEl.innerHTML = `${enDigits(state.balance)} <small>ر.س</small>`;
   if (ptsEl) ptsEl.innerHTML = `${enDigits(state.points)} <small>نقطة</small>`;
+
+  document.querySelectorAll('[data-bind="points-line"]').forEach(el => {
+    el.textContent = `${enDigits(state.points)} نقطة`;
+  });
 
   document.querySelectorAll('[data-bind="balance-inline"]').forEach(el => {
     el.textContent = fmtSAR(state.balance);

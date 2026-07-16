@@ -385,6 +385,105 @@ svg {
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
+}
+
+/* Overlay content: label, balance, recharge, points */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  color: var(--on-dark);
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.card-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.card-balance {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 4px;
+  text-align: end;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--on-dark);
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.card-balance small {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  margin-inline-start: 4px;
+}
+
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-recharge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: var(--teal);
+  color: var(--dark);
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 6px 14px rgba(46, 230, 168, 0.35);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.card-recharge:hover { background: var(--teal-600); }
+.card-recharge:active { transform: scale(0.97); }
+
+.card-points {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: end;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: rgba(12, 27, 46, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+.card-points .k {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.card-points .v {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--teal);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .azwa-card::after {
