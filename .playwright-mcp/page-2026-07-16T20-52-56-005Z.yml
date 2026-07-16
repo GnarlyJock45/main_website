@@ -1,0 +1,59 @@
+- generic [ref=f4e2]:
+  - banner [ref=f4e3]:
+    - generic "عزوة" [ref=f4e4]:
+      - generic [ref=f4e9]:
+        - generic [ref=f4e10]: عزوة
+        - generic [ref=f4e11]: AZWA
+    - generic [ref=f4e12]:
+      - button "الإشعارات" [ref=f4e13] [cursor=pointer]
+      - button "الإعدادات" [ref=f4e17] [cursor=pointer]
+  - main [ref=f4e21]:
+    - generic [ref=f4e22]:
+      - generic [ref=f4e23]: أ
+      - generic [ref=f4e24]:
+        - generic [ref=f4e25]: أحمد العتيبي
+        - generic [ref=f4e26]: ahmed@example.com
+        - generic [ref=f4e27]: عضو موثّق
+    - generic [ref=f4e30]:
+      - button "محفظتي" [ref=f4e31] [cursor=pointer]
+      - generic [ref=f4e34]:
+        - generic [ref=f4e35]: رصيد عزوة
+        - generic [ref=f4e36]: 3,480 نقطة
+        - generic [ref=f4e38]: تعادل 348 ر.س
+    - generic [ref=f4e39]:
+      - button "تذاكري" [ref=f4e40] [cursor=pointer]
+      - button "المفضلة" [ref=f4e45] [cursor=pointer]
+      - button "سجل النشاط" [ref=f4e50] [cursor=pointer]
+      - button "التقييمات" [ref=f4e56] [cursor=pointer]
+    - generic [ref=f4e61]:
+      - button "عروضي وكوبوناتي" [ref=f4e62] [cursor=pointer]
+      - button "دعوة الأصدقاء اكسب نقاط" [ref=f4e71] [cursor=pointer]:
+        - generic [ref=f4e77]: دعوة الأصدقاء
+        - generic [ref=f4e78]: اكسب نقاط
+      - button "عناويني" [ref=f4e82] [cursor=pointer]
+      - button "طرق الدفع •••• 5678" [ref=f4e91] [cursor=pointer]:
+        - generic [ref=f4e95]: طرق الدفع
+        - generic [ref=f4e96]: •••• 5678
+      - button "المساعدة والدعم" [ref=f4e100] [cursor=pointer]
+      - button "عن عزوة" [ref=f4e109] [cursor=pointer]
+    - generic [ref=f4e118]:
+      - generic [ref=f4e119]:
+        - generic [ref=f4e124]: الإشعارات
+        - switch "تفعيل الإشعارات" [checked] [ref=f4e125]
+      - button "اللغة العربية" [ref=f4e126] [cursor=pointer]:
+        - generic [ref=f4e131]: اللغة
+        - generic [ref=f4e132]: العربية
+      - button "سياسة الخصوصية" [ref=f4e136] [cursor=pointer]
+      - button "الشروط والأحكام" [ref=f4e144] [cursor=pointer]
+    - button "تسجيل خروج" [ref=f4e153] [cursor=pointer]
+  - navigation "التنقل" [ref=f4e156]:
+    - link "الرئيسية" [ref=f4e157] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f4e162] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f4e168] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f4e174] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f4e179] [cursor=pointer]:
+      - /url: more.html

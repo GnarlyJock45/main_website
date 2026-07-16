@@ -1,0 +1,92 @@
+- generic [ref=f7e2]:
+  - banner [ref=f7e3]:
+    - generic "عزوة" [ref=f7e4]:
+      - generic [ref=f7e9]:
+        - generic [ref=f7e10]: عزوة
+        - generic [ref=f7e11]: AZWA
+    - button "الإشعارات" [ref=f7e13] [cursor=pointer]
+  - main [ref=f7e18]:
+    - generic [ref=f7e19]:
+      - button "تصفية" [ref=f7e20] [cursor=pointer]
+      - heading "التقويم" [level=1] [ref=f7e23]
+      - button "اليوم" [ref=f7e25] [cursor=pointer]
+    - generic [ref=f7e29]:
+      - generic [ref=f7e346]:
+        - button "الشهر السابق" [ref=f7e347] [cursor=pointer]
+        - generic [ref=f7e350]: يوليو 2026
+        - button "الشهر التالي" [ref=f7e351] [cursor=pointer]
+      - generic [ref=f7e354]:
+        - generic [ref=f7e355]: الأ
+        - generic [ref=f7e356]: الا
+        - generic [ref=f7e357]: الث
+        - generic [ref=f7e358]: الأ
+        - generic [ref=f7e359]: الخ
+        - generic [ref=f7e360]: الج
+        - generic [ref=f7e361]: الس
+        - button "28" [disabled] [ref=f7e362] [cursor=pointer]
+        - button "29" [disabled] [ref=f7e363] [cursor=pointer]
+        - button "30" [disabled] [ref=f7e364] [cursor=pointer]
+        - button "1" [ref=f7e365] [cursor=pointer]
+        - button "2" [ref=f7e366] [cursor=pointer]
+        - button "3" [ref=f7e367] [cursor=pointer]
+        - button "4" [ref=f7e368] [cursor=pointer]
+        - button "5" [ref=f7e369] [cursor=pointer]
+        - button "6" [ref=f7e370] [cursor=pointer]
+        - button "7" [ref=f7e371] [cursor=pointer]
+        - button "8" [ref=f7e372] [cursor=pointer]
+        - button "9" [ref=f7e373] [cursor=pointer]
+        - button "10" [ref=f7e374] [cursor=pointer]
+        - button "11" [ref=f7e375] [cursor=pointer]
+        - button "12" [ref=f7e376] [cursor=pointer]
+        - button "13" [ref=f7e377] [cursor=pointer]
+        - button "14" [ref=f7e378] [cursor=pointer]
+        - button "15" [ref=f7e379] [cursor=pointer]
+        - button "16" [ref=f7e380] [cursor=pointer]
+        - button "17" [ref=f7e382] [cursor=pointer]
+        - button "18" [ref=f7e383] [cursor=pointer]
+        - button "19" [ref=f7e385] [cursor=pointer]
+        - button "20" [ref=f7e387] [cursor=pointer]
+        - button "21" [ref=f7e389] [cursor=pointer]
+        - button "22" [ref=f7e390] [cursor=pointer]
+        - button "23" [ref=f7e392] [cursor=pointer]
+        - button "24" [ref=f7e393] [cursor=pointer]
+        - button "25" [ref=f7e394] [cursor=pointer]
+        - button "26" [ref=f7e396] [cursor=pointer]
+        - button "27" [ref=f7e397] [cursor=pointer]
+        - button "28" [ref=f7e398] [cursor=pointer]
+        - button "29" [ref=f7e399] [cursor=pointer]
+        - button "30" [ref=f7e400] [cursor=pointer]
+        - button "31" [ref=f7e402] [cursor=pointer]
+        - button "1" [disabled] [ref=f7e404] [cursor=pointer]
+    - generic [ref=f7e89]:
+      - generic [ref=f7e94]:
+        - generic [ref=f7e95]: فعالياتك القادمة
+        - generic [ref=f7e96]: اختر موعدك القادم في الرياض
+      - link "عرض الكل" [ref=f7e97] [cursor=pointer]:
+        - /url: events.html
+    - generic [ref=f7e98]:
+      - heading "الأجندة" [level=2] [ref=f7e100]
+      - generic [ref=f7e101]:
+        - generic [ref=f7e405]:
+          - generic [ref=f7e406]: السبت، 25 يوليو 2026
+          - generic [ref=f7e407]: 1 فعاليات
+        - button "مباراة الهلال × النصر" [ref=f7e409] [cursor=pointer]:
+          - generic [ref=f7e416]:
+            - generic [ref=f7e417]: رياضة
+            - generic [ref=f7e418]: مباراة الهلال × النصر
+            - generic [ref=f7e419]: استاد المملكة أرينا
+            - generic [ref=f7e424]: 9:00 م
+            - generic [ref=f7e429]:
+              - generic [ref=f7e430]: ابتداءً من 150 ر.س
+              - generic [ref=f7e431]: اكسب 3X نقاط
+  - navigation "التنقل" [ref=f7e316]:
+    - link "الرئيسية" [ref=f7e317] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f7e322] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f7e328] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f7e334] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f7e339] [cursor=pointer]:
+      - /url: more.html

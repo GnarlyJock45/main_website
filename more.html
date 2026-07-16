@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0C1B2E">
+  <title>المزيد | عزوة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand" aria-label="عزوة">
+        <img class="brand-logo" src="images/logo-dark.png" alt="عزوة AZWA">
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="الإشعارات">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 1112 0c0 4 2 5 2 7H4c0-2 2-3 2-7z"/><path d="M10 20a2 2 0 004 0"/>
+          </svg>
+        </button>
+        <button class="icon-btn" aria-label="الإعدادات" data-open="profile-edit">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="profile-head">
+        <div class="avatar" data-avatar aria-hidden="true">أ</div>
+        <div class="profile-info">
+          <div class="name" data-bind="user-full">أحمد العتيبي</div>
+          <div class="email" data-bind="user-email">ahmed@example.com</div>
+          <span class="verified">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2L4 5v7c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V5l-8-3z"/></svg>
+            عضو موثّق
+          </span>
+        </div>
+      </div>
+
+      <div class="wallet-card">
+        <button class="btn btn-secondary" style="border-radius:12px;height:44px;padding:0 14px" data-open="link-card">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-inline-end:6px"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          محفظتي
+        </button>
+        <div>
+          <div class="label">رصيد عزوة</div>
+          <div class="value"><span data-bind="points">3,480</span></div>
+          <div style="font-size:11px;color:var(--ink-3);text-align:end;margin-top:2px" data-bind="points-equiv">تعادل 348 ر.س</div>
+        </div>
+      </div>
+
+      <div class="quick-grid">
+        <button class="quick-item">
+          <span class="ic-wrap" style="background:var(--teal-050)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V6a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 100-4z"/><path d="M12 6v12" stroke-dasharray="2 3"/></svg>
+          </span>
+          <span>تذاكري</span>
+        </button>
+        <button class="quick-item">
+          <span class="ic-wrap" style="background:var(--teal-050)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v18l-6-4-6 4V4z"/></svg>
+          </span>
+          <span>المفضلة</span>
+        </button>
+        <button class="quick-item">
+          <span class="ic-wrap" style="background:var(--teal-050)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.4 2.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+          </span>
+          <span>سجل النشاط</span>
+        </button>
+        <button class="quick-item">
+          <span class="ic-wrap" style="background:var(--teal-050)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2l2.9 6.9L22 10l-5 4.9L18.2 22 12 18.3 5.8 22 7 14.9 2 10l7.1-1.1L12 2z"/></svg>
+          </span>
+          <span>التقييمات</span>
+        </button>
+      </div>
+
+      <div class="menu-list">
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M20 12v9H4v-9M7 8a2.5 2.5 0 010-5C10 3 12 8 12 8s2-5 5-5a2.5 2.5 0 010 5"/></svg>
+          </span>
+          <span>عروضي وكوبوناتي</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1A4 4 0 0116 11"/></svg>
+          </span>
+          <span>دعوة الأصدقاء</span>
+          <span class="badge">اكسب نقاط</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </span>
+          <span>عناويني</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row" data-open="link-card">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          </span>
+          <span>طرق الدفع</span>
+          <span data-bind="card-last4" style="font-size:12px;color:var(--ink-3)">•••• 5678</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row" data-open="support">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 4"/><path d="M12 17h.01"/></svg>
+          </span>
+          <span>المساعدة والدعم</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+          </span>
+          <span>عن عزوة</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- Additional settings -->
+      <div class="menu-list">
+        <div class="menu-row" style="cursor:default">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1112 0c0 4 2 5 2 7H4c0-2 2-3 2-7z"/><path d="M10 20a2 2 0 004 0"/></svg>
+          </span>
+          <span>الإشعارات</span>
+          <span></span>
+          <span class="toggle" role="switch" aria-checked="true" data-toggle="notifications" tabindex="0" aria-label="تفعيل الإشعارات"></span>
+        </div>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+          </span>
+          <span>اللغة</span>
+          <span style="color:var(--ink-3);font-size:13px">العربية</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V5l-8-3z"/></svg>
+          </span>
+          <span>سياسة الخصوصية</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+        <button class="menu-row">
+          <span class="ic-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>
+          </span>
+          <span>الشروط والأحكام</span>
+          <span></span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <button class="logout" style="width:calc(100% - 40px);margin:14px auto">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+        تسجيل خروج
+      </button>
+    </main>
+
+    <nav class="bottom-nav" aria-label="التنقل">
+      <a class="nav-item" href="index.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2h-5v-6h-4v6H5a2 2 0 01-2-2V10z"/></svg></span>
+        <span>الرئيسية</span>
+      </a>
+      <a class="nav-item" href="calendar.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span>
+        <span>التقويم</span>
+      </a>
+      <a class="nav-item" href="map.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+        <span>الخريطة</span>
+      </a>
+      <a class="nav-item" href="events.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V6a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 100-4z"/><path d="M12 6v12" stroke-dasharray="2 3"/></svg></span>
+        <span>الفعاليات</span>
+      </a>
+      <a class="nav-item" href="more.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+        <span>المزيد</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

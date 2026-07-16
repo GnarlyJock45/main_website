@@ -1,0 +1,141 @@
+- generic [ref=f6e2]:
+  - banner [ref=f6e3]:
+    - generic "عزوة" [ref=f6e4]:
+      - generic [ref=f6e9]:
+        - generic [ref=f6e10]: عزوة
+        - generic [ref=f6e11]: AZWA
+    - button "الإشعارات" [ref=f6e13] [cursor=pointer]
+  - main [ref=f6e18]:
+    - region "مرحباً أحمد" [ref=f6e19]:
+      - generic [ref=f6e21]:
+        - generic [ref=f6e22]:
+          - text: مرحباً
+          - generic [ref=f6e23]: أحمد
+          - generic [ref=f6e24]: 👋
+        - generic [ref=f6e25]: اكتشف فعاليات الرياض واستفد من نقاطك
+      - img "بطاقة عزوة" [ref=f6e26]:
+        - generic [ref=f6e27]: عزوةAZWA
+        - generic [ref=f6e38]:
+          - generic [ref=f6e39]: •••• 5678
+          - generic [ref=f6e40]: VISA
+      - generic [ref=f6e41]:
+        - generic [ref=f6e42]:
+          - generic [ref=f6e43]: رصيد البطاقة
+          - generic [ref=f6e48]: 1,500 ر.س
+          - button "إضافة رصيد" [ref=f6e49] [cursor=pointer]
+        - generic [ref=f6e52]:
+          - generic [ref=f6e53]: نقاطك
+          - generic [ref=f6e58]: 3,480 نقطة
+          - button "استبدل نقاطك" [ref=f6e59] [cursor=pointer]
+    - generic [ref=f6e62]:
+      - generic [ref=f6e63]:
+        - heading "مقترح لك" [level=2] [ref=f6e64]
+        - link "عرض الكل" [ref=f6e65] [cursor=pointer]:
+          - /url: events.html
+      - generic [ref=f6e66]:
+        - button "مباراة الهلال × النصر" [ref=f6e67] [cursor=pointer]:
+          - generic [ref=f6e68]: 3X نقاط
+          - generic [ref=f6e78]:
+            - heading "مباراة الهلال × النصر" [level=3] [ref=f6e79]
+            - generic [ref=f6e80]:
+              - generic [ref=f6e81]: 25 يوليو • 9:00 م
+              - generic [ref=f6e86]: استاد المملكة أرينا
+            - generic [ref=f6e91]: ابتداءً من 150 ر.س
+        - button "حفل راشد الماجد" [ref=f6e92] [cursor=pointer]:
+          - generic [ref=f6e93]: 2X نقاط
+          - generic [ref=f6e101]:
+            - heading "حفل راشد الماجد" [level=3] [ref=f6e102]
+            - generic [ref=f6e103]:
+              - generic [ref=f6e104]: 30 يوليو • 9:30 م
+              - generic [ref=f6e109]: بوليفارد رياض سيتي
+            - generic [ref=f6e114]: ابتداءً من 200 ر.س
+        - button "سينما VOX" [ref=f6e115] [cursor=pointer]:
+          - generic [ref=f6e116]: 2X نقاط
+          - generic [ref=f6e125]:
+            - heading "سينما VOX" [level=3] [ref=f6e126]
+            - generic [ref=f6e127]:
+              - generic [ref=f6e128]: 18 يوليو • 7:00 م
+              - generic [ref=f6e133]: جميع الفروع
+            - generic [ref=f6e138]: ابتداءً من 55 ر.س
+        - button "سيكس فلاغز مدينة القدية" [ref=f6e139] [cursor=pointer]:
+          - generic [ref=f6e140]: 2X نقاط
+          - generic [ref=f6e149]:
+            - heading "سيكس فلاغز مدينة القدية" [level=3] [ref=f6e150]
+            - generic [ref=f6e151]:
+              - generic [ref=f6e152]: 2 أغسطس • 4:00 م
+              - generic [ref=f6e157]: مدينة القدية
+            - generic [ref=f6e162]: ابتداءً من 170 ر.س
+    - button "3X نقاط هذا الأسبوع! استخدم بطاقتك في السينما والمطاعم حتى 20 يوليو" [ref=f6e163]:
+      - generic [ref=f6e168]:
+        - generic [ref=f6e169]: 3X نقاط هذا الأسبوع!
+        - generic [ref=f6e170]: استخدم بطاقتك في السينما والمطاعم حتى 20 يوليو
+    - generic [ref=f6e174]:
+      - generic [ref=f6e175]:
+        - heading "بالقرب منك" [level=2] [ref=f6e176]
+        - link "عرض الكل" [ref=f6e177] [cursor=pointer]:
+          - /url: map.html
+      - generic [ref=f6e178]:
+        - link "مطاعم" [ref=f6e179] [cursor=pointer]:
+          - /url: events.html?cat=food
+        - link "مقاهي" [ref=f6e184] [cursor=pointer]:
+          - /url: events.html?cat=cinema
+        - link "حفلات" [ref=f6e190] [cursor=pointer]:
+          - /url: events.html?cat=concert
+        - link "ألعاب" [ref=f6e197] [cursor=pointer]:
+          - /url: events.html?cat=games
+        - link "فعاليات" [ref=f6e205] [cursor=pointer]:
+          - /url: events.html?cat=live
+        - link "رياضة" [ref=f6e210] [cursor=pointer]:
+          - /url: events.html?cat=sport
+        - link "ترفيه" [ref=f6e216] [cursor=pointer]:
+          - /url: events.html?cat=themepark
+        - link "تجارب" [ref=f6e221] [cursor=pointer]:
+          - /url: events.html?cat=experience
+      - generic [ref=f6e226]: المسافات تقريبية لأغراض العرض
+  - navigation "التنقل" [ref=f6e227]:
+    - link "الرئيسية" [ref=f6e228] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f6e233] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f6e239] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f6e245] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f6e250] [cursor=pointer]:
+      - /url: more.html
+  - dialog [ref=f6e257]:
+    - generic [ref=f6e258]:
+      - generic [ref=f6e266]:
+        - generic [ref=f6e267]: رياضة
+        - button "إغلاق" [active] [ref=f6e268] [cursor=pointer]
+      - heading "مباراة الهلال × النصر" [level=3] [ref=f6e271]
+      - generic [ref=f6e272]: Al Hilal × Al Nassr
+      - generic [ref=f6e273]:
+        - generic [ref=f6e274]:
+          - generic [ref=f6e275]: التاريخ
+          - generic [ref=f6e279]: السبت، 25 يوليو 2026
+        - generic [ref=f6e280]:
+          - generic [ref=f6e281]: الوقت
+          - generic [ref=f6e285]: 9:00 م
+        - generic [ref=f6e286]:
+          - generic [ref=f6e287]: المكان
+          - generic [ref=f6e291]: استاد المملكة أرينا، الرياض
+      - paragraph [ref=f6e292]: ديربي الرياض. أجواء استثنائية، هتافات ذهبية، وليلة كرة قدم لا تُنسى في استاد المملكة أرينا.
+      - generic [ref=f6e293]:
+        - generic [ref=f6e294]:
+          - generic [ref=f6e295]: عدد التذاكر
+          - generic [ref=f6e296]: 150 ر.س
+        - generic [ref=f6e297]:
+          - button "تقليل" [ref=f6e298] [cursor=pointer]
+          - generic [ref=f6e300]: "1"
+          - button "زيادة" [ref=f6e301] [cursor=pointer]
+      - generic [ref=f6e304]:
+        - generic [ref=f6e305]: المجموع
+        - generic [ref=f6e306]: 150 ر.س
+      - generic [ref=f6e307]:
+        - generic [ref=f6e308]: تكسب
+        - generic [ref=f6e309]: +340 نقطة
+      - generic [ref=f6e310]:
+        - generic [ref=f6e311]: "الرصيد الحالي: 1,500 ر.س"
+        - button "شحن" [ref=f6e312] [cursor=pointer]
+      - button "احجز الآن" [ref=f6e313] [cursor=pointer]

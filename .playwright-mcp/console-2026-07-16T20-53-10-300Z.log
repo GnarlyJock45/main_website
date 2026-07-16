@@ -1,0 +1,3 @@
+[   40364ms] TypeError: Cannot set properties of null (setting 'textContent')
+    at openEventSheet (http://localhost:5555/js/app.js:845:53)
+    at HTMLButtonElement.<anonymous> (http://localhost:5555/js/app.js:798:15)

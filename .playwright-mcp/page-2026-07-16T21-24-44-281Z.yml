@@ -1,0 +1,88 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic "عزوة" [ref=e4]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: عزوة
+        - generic [ref=e11]: AZWA
+    - button "الإشعارات" [ref=e13] [cursor=pointer]
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - heading "الخريطة" [level=1] [ref=e19]
+      - button "بحث" [ref=e21] [cursor=pointer]
+    - generic "خريطة الرياض" [ref=e25]:
+      - iframe [ref=e26]:
+        
+      - generic [ref=e27]: اضغط على مكان بالأسفل لتغيير الخريطة
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - heading "أماكن قريبة منك" [level=2] [ref=e30]
+        - link "عرض الكل" [ref=e31] [cursor=pointer]:
+          - /url: events.html
+      - generic [ref=e32]:
+        - button "بوليفارد رياض سيتي الشمال 4.1 كم تقريباً" [ref=e33] [cursor=pointer]:
+          - generic [ref=e38]:
+            - generic [ref=e39]: بوليفارد رياض سيتي
+            - generic [ref=e40]: الشمال
+          - generic [ref=e41]:
+            - generic [ref=e42]: 4.1 كم
+            - text: تقريباً
+        - button "ڤيا رياض الملقا 6.2 كم تقريباً" [ref=e43] [cursor=pointer]:
+          - generic [ref=e48]:
+            - generic [ref=e49]: ڤيا رياض
+            - generic [ref=e50]: الملقا
+          - generic [ref=e51]:
+            - generic [ref=e52]: 6.2 كم
+            - text: تقريباً
+        - button "سوبر بارك — خريص خريص 8.4 كم تقريباً" [ref=e53] [cursor=pointer]:
+          - generic [ref=e58]:
+            - generic [ref=e59]: سوبر بارك — خريص
+            - generic [ref=e60]: خريص
+          - generic [ref=e61]:
+            - generic [ref=e62]: 8.4 كم
+            - text: تقريباً
+        - button "BattleKart الرياض غرناطة 5.8 كم تقريباً" [ref=e63] [cursor=pointer]:
+          - generic [ref=e68]:
+            - generic [ref=e69]: BattleKart الرياض
+            - generic [ref=e70]: غرناطة
+          - generic [ref=e71]:
+            - generic [ref=e72]: 5.8 كم
+            - text: تقريباً
+        - button "غرناطة مول غرناطة 5.9 كم تقريباً" [ref=e73] [cursor=pointer]:
+          - generic [ref=e78]:
+            - generic [ref=e79]: غرناطة مول
+            - generic [ref=e80]: غرناطة
+          - generic [ref=e81]:
+            - generic [ref=e82]: 5.9 كم
+            - text: تقريباً
+        - button "استاد المملكة أرينا الرياض 6.2 كم تقريباً" [ref=e83] [cursor=pointer]:
+          - generic [ref=e88]:
+            - generic [ref=e89]: استاد المملكة أرينا
+            - generic [ref=e90]: الرياض
+          - generic [ref=e91]:
+            - generic [ref=e92]: 6.2 كم
+            - text: تقريباً
+        - button "مدينة القدية القدية 38 كم تقريباً" [ref=e93] [cursor=pointer]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: مدينة القدية
+            - generic [ref=e100]: القدية
+          - generic [ref=e101]:
+            - generic [ref=e102]: 38 كم
+            - text: تقريباً
+        - button "روف مول الياسمين 9.2 كم تقريباً" [ref=e103] [cursor=pointer]:
+          - generic [ref=e108]:
+            - generic [ref=e109]: روف مول
+            - generic [ref=e110]: الياسمين
+          - generic [ref=e111]:
+            - generic [ref=e112]: 9.2 كم
+            - text: تقريباً
+  - navigation "التنقل" [ref=e113]:
+    - link "الرئيسية" [ref=e114] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=e119] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=e125] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=e131] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=e136] [cursor=pointer]:
+      - /url: more.html

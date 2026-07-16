@@ -1,0 +1,176 @@
+- generic [ref=f7e2]:
+  - banner [ref=f7e3]:
+    - generic "عزوة" [ref=f7e4]:
+      - generic [ref=f7e9]:
+        - generic [ref=f7e10]: عزوة
+        - generic [ref=f7e11]: AZWA
+    - button "الإشعارات" [ref=f7e13] [cursor=pointer]
+  - main [ref=f7e18]:
+    - generic [ref=f7e19]:
+      - button "تصفية" [ref=f7e20] [cursor=pointer]
+      - heading "التقويم" [level=1] [ref=f7e23]
+      - button "اليوم" [ref=f7e25] [cursor=pointer]
+    - generic [ref=f7e29]:
+      - generic [ref=f7e30]:
+        - button "الشهر السابق" [ref=f7e31] [cursor=pointer]
+        - generic [ref=f7e34]: يوليو 2026
+        - button "الشهر التالي" [ref=f7e35] [cursor=pointer]
+      - generic [ref=f7e38]:
+        - generic [ref=f7e39]: الأ
+        - generic [ref=f7e40]: الا
+        - generic [ref=f7e41]: الث
+        - generic [ref=f7e42]: الأ
+        - generic [ref=f7e43]: الخ
+        - generic [ref=f7e44]: الج
+        - generic [ref=f7e45]: الس
+        - button "28" [disabled] [ref=f7e46] [cursor=pointer]
+        - button "29" [disabled] [ref=f7e47] [cursor=pointer]
+        - button "30" [disabled] [ref=f7e48] [cursor=pointer]
+        - button "1" [ref=f7e49] [cursor=pointer]
+        - button "2" [ref=f7e50] [cursor=pointer]
+        - button "3" [ref=f7e51] [cursor=pointer]
+        - button "4" [ref=f7e52] [cursor=pointer]
+        - button "5" [ref=f7e53] [cursor=pointer]
+        - button "6" [ref=f7e54] [cursor=pointer]
+        - button "7" [ref=f7e55] [cursor=pointer]
+        - button "8" [ref=f7e56] [cursor=pointer]
+        - button "9" [ref=f7e57] [cursor=pointer]
+        - button "10" [ref=f7e58] [cursor=pointer]
+        - button "11" [ref=f7e59] [cursor=pointer]
+        - button "12" [ref=f7e60] [cursor=pointer]
+        - button "13" [ref=f7e61] [cursor=pointer]
+        - button "14" [ref=f7e62] [cursor=pointer]
+        - button "15" [ref=f7e63] [cursor=pointer]
+        - button "16" [ref=f7e64] [cursor=pointer]
+        - button "17" [ref=f7e66] [cursor=pointer]
+        - button "18" [ref=f7e67] [cursor=pointer]
+        - button "19" [ref=f7e69] [cursor=pointer]
+        - button "20" [ref=f7e71] [cursor=pointer]
+        - button "21" [ref=f7e73] [cursor=pointer]
+        - button "22" [ref=f7e74] [cursor=pointer]
+        - button "23" [ref=f7e76] [cursor=pointer]
+        - button "24" [ref=f7e77] [cursor=pointer]
+        - button "25" [ref=f7e78] [cursor=pointer]
+        - button "26" [ref=f7e80] [cursor=pointer]
+        - button "27" [ref=f7e81] [cursor=pointer]
+        - button "28" [ref=f7e82] [cursor=pointer]
+        - button "29" [ref=f7e83] [cursor=pointer]
+        - button "30" [ref=f7e84] [cursor=pointer]
+        - button "31" [ref=f7e86] [cursor=pointer]
+        - button "1" [disabled] [ref=f7e88] [cursor=pointer]
+    - generic [ref=f7e89]:
+      - generic [ref=f7e94]:
+        - generic [ref=f7e95]: فعالياتك القادمة
+        - generic [ref=f7e96]: اختر موعدك القادم في الرياض
+      - link "عرض الكل" [ref=f7e97] [cursor=pointer]:
+        - /url: events.html
+    - generic [ref=f7e98]:
+      - heading "الأجندة" [level=2] [ref=f7e100]
+      - generic [ref=f7e101]:
+        - generic [ref=f7e102]:
+          - generic [ref=f7e103]: الخميس، 16 يوليو 2026
+          - generic [ref=f7e104]: 1 فعاليات
+        - button "قعدة سعد العود" [ref=f7e106] [cursor=pointer]:
+          - generic [ref=f7e112]:
+            - generic [ref=f7e113]: عروض حية
+            - generic [ref=f7e114]: قعدة سعد العود
+            - generic [ref=f7e115]: الروشن
+            - generic [ref=f7e120]: 9:30 م
+            - generic [ref=f7e125]:
+              - generic [ref=f7e126]: ابتداءً من 90 ر.س
+              - generic [ref=f7e127]: اكسب 2X نقاط
+        - generic [ref=f7e128]:
+          - generic [ref=f7e129]: السبت، 18 يوليو 2026
+          - generic [ref=f7e130]: 1 فعاليات
+        - button "سينما VOX" [ref=f7e132] [cursor=pointer]:
+          - generic [ref=f7e138]:
+            - generic [ref=f7e139]: سينما
+            - generic [ref=f7e140]: سينما VOX
+            - generic [ref=f7e141]: جميع الفروع
+            - generic [ref=f7e146]: 7:00 م
+            - generic [ref=f7e151]:
+              - generic [ref=f7e152]: ابتداءً من 55 ر.س
+              - generic [ref=f7e153]: اكسب 2X نقاط
+        - generic [ref=f7e154]:
+          - generic [ref=f7e155]: الأحد، 19 يوليو 2026
+          - generic [ref=f7e156]: 1 فعاليات
+        - button "يلا بولينغ" [ref=f7e158] [cursor=pointer]:
+          - generic [ref=f7e166]:
+            - generic [ref=f7e167]: ألعاب
+            - generic [ref=f7e168]: يلا بولينغ
+            - generic [ref=f7e169]: غرناطة مول
+            - generic [ref=f7e174]: 7:00 م
+            - generic [ref=f7e179]:
+              - generic [ref=f7e180]: ابتداءً من 60 ر.س
+              - generic [ref=f7e181]: اكسب 2X نقاط
+        - generic [ref=f7e182]:
+          - generic [ref=f7e183]: الاثنين، 20 يوليو 2026
+          - generic [ref=f7e184]: 1 فعاليات
+        - button "سوبر بارك الرياض" [ref=f7e186] [cursor=pointer]:
+          - generic [ref=f7e194]:
+            - generic [ref=f7e195]: عائلية
+            - generic [ref=f7e196]: سوبر بارك الرياض
+            - generic [ref=f7e197]: خريص
+            - generic [ref=f7e202]: 11:00 ص
+            - generic [ref=f7e207]:
+              - generic [ref=f7e208]: ابتداءً من 80 ر.س
+              - generic [ref=f7e209]: اكسب 2X نقاط
+        - generic [ref=f7e210]:
+          - generic [ref=f7e211]: الأربعاء، 22 يوليو 2026
+          - generic [ref=f7e212]: 1 فعاليات
+        - button "BattleKart الرياض" [ref=f7e214] [cursor=pointer]:
+          - generic [ref=f7e222]:
+            - generic [ref=f7e223]: ألعاب
+            - generic [ref=f7e224]: BattleKart الرياض
+            - generic [ref=f7e225]: غرناطة مول
+            - generic [ref=f7e230]: 6:00 م
+            - generic [ref=f7e235]:
+              - generic [ref=f7e236]: ابتداءً من 110 ر.س
+              - generic [ref=f7e237]: اكسب 2X نقاط
+        - generic [ref=f7e238]:
+          - generic [ref=f7e239]: السبت، 25 يوليو 2026
+          - generic [ref=f7e240]: 1 فعاليات
+        - button "مباراة الهلال × النصر" [ref=f7e242] [cursor=pointer]:
+          - generic [ref=f7e249]:
+            - generic [ref=f7e250]: رياضة
+            - generic [ref=f7e251]: مباراة الهلال × النصر
+            - generic [ref=f7e252]: استاد المملكة أرينا
+            - generic [ref=f7e257]: 9:00 م
+            - generic [ref=f7e262]:
+              - generic [ref=f7e263]: ابتداءً من 150 ر.س
+              - generic [ref=f7e264]: اكسب 3X نقاط
+        - generic [ref=f7e265]:
+          - generic [ref=f7e266]: الخميس، 30 يوليو 2026
+          - generic [ref=f7e267]: 1 فعاليات
+        - button "حفل راشد الماجد" [ref=f7e269] [cursor=pointer]:
+          - generic [ref=f7e274]:
+            - generic [ref=f7e275]: حفلات
+            - generic [ref=f7e276]: حفل راشد الماجد
+            - generic [ref=f7e277]: بوليفارد رياض سيتي
+            - generic [ref=f7e282]: 9:30 م
+            - generic [ref=f7e287]:
+              - generic [ref=f7e288]: ابتداءً من 200 ر.س
+              - generic [ref=f7e289]: اكسب 2X نقاط
+        - generic [ref=f7e290]:
+          - generic [ref=f7e291]: الجمعة، 31 يوليو 2026
+          - generic [ref=f7e292]: 1 فعاليات
+        - button "ليالي أمالي الصيفية" [ref=f7e294] [cursor=pointer]:
+          - generic [ref=f7e300]:
+            - generic [ref=f7e301]: عروض حية
+            - generic [ref=f7e302]: ليالي أمالي الصيفية
+            - generic [ref=f7e303]: مسرح أبو بكر سالم
+            - generic [ref=f7e308]: 9:00 م
+            - generic [ref=f7e313]:
+              - generic [ref=f7e314]: ابتداءً من 110 ر.س
+              - generic [ref=f7e315]: اكسب 2X نقاط
+  - navigation "التنقل" [ref=f7e316]:
+    - link "الرئيسية" [ref=f7e317] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f7e322] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f7e328] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f7e334] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f7e339] [cursor=pointer]:
+      - /url: more.html
