@@ -1,0 +1,34 @@
+# Azwa | .gitignore
+
+# --- Backend / Python ---
+backend/azwa.db          # SQLite DB is regenerated on demand
+backend/*.db
+backend/__pycache__/
+backend/.pytest_cache/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# --- Frontend build artifacts (we don't have any yet, but future-proof) ---
+node_modules/
+dist/
+build/
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Screenshots / test artifacts from Playwright / dev cycles ---
+.playwright-mcp/
+*.png
+!images/*.png
+!assets/**/*.png
+
+# --- Secrets (belt and suspenders — we don't have any here) ---
+.env
+.env.local
+*.pem

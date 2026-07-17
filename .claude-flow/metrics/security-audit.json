@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-07-17T19:12:35.043Z",
+  "timestamp": "2026-07-17T19:52:35.092Z",
   "mode": "local",
   "checks": {
     "envFilesProtected": true,
-    "gitIgnoreExists": false,
+    "gitIgnoreExists": true,
     "noHardcodedSecrets": true
   },
   "riskLevel": "low",

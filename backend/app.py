@@ -61,7 +61,10 @@ from flask_cors import CORS
 # --------------------------------------------------------------------------- #
 
 BASE_DIR = Path(__file__).parent
-DB_PATH = Path(os.environ.get("AZWA_DB_PATH", BASE_DIR / "azwa.db"))
+DB_PATH_ENV = os.environ.get("AZWA_DB_PATH")
+# Fallback chain: env var (if set and writable) → alongside app.py → /tmp.
+# Resolved lazily so we can log which one we picked.
+DB_PATH: Path  # populated by init_db_if_needed()
 SCHEMA_PATH = BASE_DIR / "schema.sql"
 SEED_PATH = BASE_DIR / "seed.sql"
 
@@ -90,12 +93,37 @@ def close_db(_exc=None):
         conn.close()
 
 
+def _pick_writable_db_path() -> Path:
+    """Try each candidate DB path in order; return the first one we can
+    actually create + open. Logs the choice so it's visible in Render logs."""
+    candidates: list[Path] = []
+    if DB_PATH_ENV:
+        candidates.append(Path(DB_PATH_ENV))
+    candidates.append(BASE_DIR / "azwa.db")   # next to app.py
+    candidates.append(Path("/tmp/azwa.db"))   # always writable on Render/Linux
+
+    for p in candidates:
+        try:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            # Touch+open to prove we can actually write here
+            conn = sqlite3.connect(p, isolation_level=None)
+            conn.close()
+            print(f"[azwa] using DB path: {p}", flush=True)
+            return p
+        except Exception as e:  # OperationalError, PermissionError, OSError, ...
+            print(f"[azwa] DB path unusable {p}: {e}", flush=True)
+            continue
+    # If we get here every candidate failed — surface the real error.
+    raise RuntimeError(f"no writable DB path among: {candidates}")
+
+
 def init_db_if_needed():
     """Runs schema (idempotent) and seeds if the events table is empty."""
-    global _initialized
+    global _initialized, DB_PATH
     with _init_lock:
         if _initialized:
             return
+        DB_PATH = _pick_writable_db_path()
         conn = sqlite3.connect(DB_PATH, isolation_level=None)
         conn.execute("pragma foreign_keys = on")
         try:
@@ -103,6 +131,7 @@ def init_db_if_needed():
             cnt = conn.execute("select count(*) from events").fetchone()[0]
             if cnt == 0:
                 conn.executescript(SEED_PATH.read_text(encoding="utf-8"))
+                print(f"[azwa] seeded fresh DB with events + packages", flush=True)
         finally:
             conn.close()
         _initialized = True
@@ -218,9 +247,46 @@ def row_to_dict(row: sqlite3.Row | None) -> dict | None:
 # Endpoints
 # --------------------------------------------------------------------------- #
 
+@app.get("/")
+def root():
+    """Landing page for the API — makes it obvious the service is up when
+    someone visits the bare Render URL instead of a specific /api/* endpoint."""
+    return {
+        "service": "azwa-api",
+        "status": "ok",
+        "time": now_iso(),
+        "endpoints": [
+            "/api/health",
+            "/api/session/init (POST, needs X-User-Id)",
+            "/api/events",
+            "/api/packages",
+            "/api/profile", "/api/wallet", "/api/cards",
+            "/api/bookings", "/api/transactions", "/api/favorites",
+            "/api/rpc/recharge", "/api/rpc/book_event", "/api/rpc/book_package",
+        ],
+        "note": "Client identity is a UUID sent via the X-User-Id request header. "
+                "This is an API-only service; the frontend lives elsewhere.",
+    }
+
+
 @app.get("/api/health")
 def health():
     return {"ok": True, "time": now_iso()}
+
+
+@app.errorhandler(500)
+def _internal_error(err):
+    """Return a JSON body instead of the default HTML error page — makes
+    it easier to see what's wrong from a browser or a curl call."""
+    return jsonify({
+        "error": "internal_error",
+        "message": str(err),
+    }), 500
+
+
+@app.errorhandler(404)
+def _not_found(_err):
+    return jsonify({"error": "not_found", "message": "Try / for the list of endpoints."}), 404
 
 
 # ---------- Session ----------
