@@ -1,0 +1,76 @@
+- generic [ref=f4e2]:
+  - banner [ref=f4e3]:
+    - generic "عزوة" [ref=f4e4]:
+      - img "عزوة AZWA" [ref=f4e5]
+    - generic [ref=f4e6]:
+      - button "الإشعارات" [ref=f4e7] [cursor=pointer]
+      - button "الإعدادات" [ref=f4e11] [cursor=pointer]
+  - main [ref=f4e15]:
+    - generic [ref=f4e16]:
+      - generic [ref=f4e17]: أ
+      - generic [ref=f4e18]:
+        - generic [ref=f4e19]: زائر
+        - generic [ref=f4e20]: عضو موثّق
+    - generic [ref=f4e23]:
+      - button "محفظتي" [ref=f4e24] [cursor=pointer]
+      - generic [ref=f4e27]:
+        - generic [ref=f4e28]: رصيد عزوة
+        - generic [ref=f4e29]: 0 نقطة
+        - generic [ref=f4e31]: تعادل 0 ر.س
+    - generic [ref=f4e32]:
+      - button "تذاكري" [ref=f4e33] [cursor=pointer]
+      - button "المفضلة" [ref=f4e38] [cursor=pointer]
+      - button "سجل النشاط" [ref=f4e43] [cursor=pointer]
+      - button "التقييمات" [ref=f4e49] [cursor=pointer]
+    - generic [ref=f4e54]:
+      - button "عروضي وكوبوناتي" [ref=f4e55] [cursor=pointer]
+      - button "دعوة الأصدقاء اكسب نقاط" [ref=f4e64] [cursor=pointer]:
+        - generic [ref=f4e70]: دعوة الأصدقاء
+        - generic [ref=f4e71]: اكسب نقاط
+      - button "عناويني" [ref=f4e75] [cursor=pointer]
+      - button "طرق الدفع •••• ••••" [ref=f4e84] [cursor=pointer]:
+        - generic [ref=f4e88]: طرق الدفع
+        - generic [ref=f4e89]: •••• ••••
+      - button "المساعدة والدعم" [ref=f4e93] [cursor=pointer]
+      - button "عن عزوة" [ref=f4e102] [cursor=pointer]
+    - generic [ref=f4e111]:
+      - generic [ref=f4e112]:
+        - generic [ref=f4e117]: الإشعارات
+        - switch "تفعيل الإشعارات" [checked] [ref=f4e118]
+      - button "اللغة العربية" [ref=f4e119] [cursor=pointer]:
+        - generic [ref=f4e124]: اللغة
+        - generic [ref=f4e125]: العربية
+      - button "سياسة الخصوصية" [ref=f4e129] [cursor=pointer]
+      - button "الشروط والأحكام" [ref=f4e137] [cursor=pointer]
+    - button "تسجيل الدخول" [ref=f4e146] [cursor=pointer]
+  - navigation "التنقل" [ref=f4e150]:
+    - link "الرئيسية" [ref=f4e151] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f4e156] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f4e162] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f4e168] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f4e173] [cursor=pointer]:
+      - /url: more.html
+  - dialog [ref=f4e180]:
+    - generic [ref=f4e181]:
+      - heading "تسجيل الدخول" [level=3] [ref=f4e183]
+      - paragraph [ref=f4e184]: أدخل بريدك وكلمة المرور، أو استخدم رمز البريد
+      - generic [ref=f4e185]:
+        - generic [ref=f4e186]: البريد الإلكتروني
+        - textbox "البريد الإلكتروني" [ref=f4e187]:
+          - /placeholder: you@example.com
+          - text: test-login-debug@example.com
+      - generic [ref=f4e188]:
+        - generic [ref=f4e189]: كلمة المرور
+        - textbox "كلمة المرور" [ref=f4e190]:
+          - /placeholder: 6 أحرف أو أكثر
+          - text: testpass123
+      - button "تسجيل الدخول" [disabled] [ref=f4e191]
+      - button "إنشاء حساب جديد" [ref=f4e192] [cursor=pointer]
+      - generic [ref=f4e193]: أو
+      - button "إرسال رمز عبر البريد" [ref=f4e194] [cursor=pointer]
+      - button "إغلاق" [ref=f4e195] [cursor=pointer]
+      - paragraph [ref=f4e196]: هذه واجهة تجريبية. لا تُخزَّن أي بيانات دفع حقيقية.

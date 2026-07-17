@@ -1938,16 +1938,27 @@ svg {
 
 .qty-row {
   display: flex;
-  align-items: center;
+  align-items: center;   /* center both sides on the row's vertical midline */
   justify-content: space-between;
   padding: 14px;
   background: var(--surface-2);
   border-radius: 14px;
   margin-top: 12px;
+  min-height: 62px;
+}
+
+/* Give every direct child of the row explicit vertical centering so the
+   2-line label/price stack and the 1-line +/- controls align at their midlines. */
+.qty-row > * {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .qty-controls {
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 12px;
 }
@@ -2022,6 +2033,51 @@ svg {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Filter banner (shown above events list when a URL filter is active) */
+.filter-banner {
+  margin: 0 20px 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--teal-050);
+  color: var(--teal-ink);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(46, 230, 168, 0.35);
+}
+.filter-banner .lbl { flex: 1; }
+.filter-banner .clear {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.filter-banner .clear:hover { background: var(--surface-3); }
+
+/* Sign-in "or" divider */
+.signin-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 12px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.signin-divider::before,
+.signin-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 /* Toggle */
 .toggle {
   position: relative;
@@ -2090,6 +2146,135 @@ svg {
   .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .cat-tile .ic-wrap { width: 48px; height: 48px; }
 }
+
+/* ==========================================================================
+   Cards page — two-card stack (personal + family), placeholder variant.
+   ========================================================================== */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 20px;
+}
+.card-list .azwa-card { margin: 0; }
+
+/* Family card gets a warmer accent so it reads distinct from personal at a glance. */
+.azwa-card--family {
+  background: linear-gradient(135deg, #1a1030 0%, #2a1650 100%);
+}
+.azwa-card--family::after {
+  background: radial-gradient(closest-side, rgba(255, 120, 160, 0.35), transparent 70%);
+}
+.azwa-card--family .card-recharge {
+  background: #ff86b0;
+  color: #1a1030;
+  box-shadow: 0 6px 14px rgba(255, 134, 176, 0.35);
+}
+
+/* Placeholder tile for unlinked cards — desaturated + "activate" CTA */
+.azwa-card--placeholder {
+  filter: saturate(0.4);
+  opacity: 0.85;
+}
+.azwa-card--placeholder .card-recharge {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--dark);
+  box-shadow: none;
+}
+
+.card-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--on-dark);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  backdrop-filter: blur(6px);
+}
+
+.card-holder-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.card-holder {
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.card-num-mini {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ==========================================================================
+   Package cards (scroller on events.html) + package details sheet.
+   ========================================================================== */
+.package-card { position: relative; }
+.pkg-badge {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(12, 27, 46, 0.72);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+
+.pkg-items-head {
+  margin: 14px 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.pkg-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.pkg-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.pkg-step {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--dark);
+  font-weight: 800;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pkg-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pkg-item-meta {
+  font-size: 11px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.pkg-item-meta svg { flex-shrink: 0; }
 
 /* Motion preference */
 @media (prefers-reduced-motion: reduce) {

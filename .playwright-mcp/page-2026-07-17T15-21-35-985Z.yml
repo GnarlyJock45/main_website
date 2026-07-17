@@ -1,0 +1,246 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic "عزوة" [ref=e4]:
+      - img "عزوة AZWA" [ref=e5]
+    - button "الإشعارات" [ref=e7] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - button "بحث" [ref=e13] [cursor=pointer]
+      - heading "الفعاليات" [level=1] [ref=e17]
+      - button "تصفية" [ref=e19] [cursor=pointer]
+    - searchbox "بحث" [ref=e30]
+    - tablist "التصنيفات" [ref=e32]:
+      - button "الكل" [ref=e33] [cursor=pointer]
+      - button "مطاعم" [ref=e39] [cursor=pointer]
+      - button "رياضة" [ref=e42] [cursor=pointer]
+      - button "ترفيه" [ref=e45] [cursor=pointer]
+      - button "سينما" [ref=e49] [cursor=pointer]
+      - button "ألعاب" [ref=e53] [cursor=pointer]
+      - button "تجارب" [ref=e59] [cursor=pointer]
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - heading "الباقات" [level=2] [ref=e64]
+        - generic [ref=e65]: بأسعار أفضل
+      - generic [ref=e66]:
+        - button "مغامرة العلا" [ref=e67] [cursor=pointer]:
+          - generic [ref=e68]:
+            - generic [ref=e70]: 2 فعاليات
+            - generic [ref=e71]: 3X نقاط
+          - generic [ref=e72]:
+            - text: باقة • AlUla
+            - heading "مغامرة العلا" [level=3] [ref=e73]
+            - generic [ref=e74]: ابتداءً من 700 ر.س
+        - button "عطلة نهاية أسبوع في جدة" [ref=e75] [cursor=pointer]:
+          - generic [ref=e76]:
+            - generic [ref=e78]: 2 فعاليات
+            - generic [ref=e79]: 2X نقاط
+          - generic [ref=e80]:
+            - text: باقة • Jeddah
+            - heading "عطلة نهاية أسبوع في جدة" [level=3] [ref=e81]
+            - generic [ref=e82]: ابتداءً من 100 ر.س
+        - button "ثلاثية الرياض العائلية" [ref=e83] [cursor=pointer]:
+          - generic [ref=e84]:
+            - generic [ref=e86]: 3 فعاليات
+            - generic [ref=e87]: 3X نقاط
+          - generic [ref=e88]:
+            - text: باقة • Riyadh
+            - heading "ثلاثية الرياض العائلية" [level=3] [ref=e89]
+            - generic [ref=e90]: ابتداءً من 300 ر.س
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - heading "الأكثر رواجاً" [level=2] [ref=e93]
+        - link "عرض الكل" [ref=e94] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e95]:
+        - button "مباراة الهلال × النصر" [ref=e96] [cursor=pointer]:
+          - generic [ref=e97]: اكسب 3X نقاط
+          - generic [ref=e100]:
+            - generic [ref=e101]: رياضة
+            - generic [ref=e102]: مباراة الهلال × النصر
+            - generic [ref=e103]: استاد المملكة أرينا، الرياض
+            - generic [ref=e108]:
+              - generic [ref=e109]: 9:00 م
+              - generic [ref=e113]: 25 يوليو
+            - generic [ref=e117]: ابتداءً من 150 ر.س
+        - button "سينما VOX" [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]: اكسب 2X نقاط
+          - generic [ref=e126]:
+            - generic [ref=e127]: سينما
+            - generic [ref=e128]: سينما VOX
+            - generic [ref=e129]: VOX Riyadh Park، الرياض
+            - generic [ref=e134]:
+              - generic [ref=e135]: 7:00 م
+              - generic [ref=e139]: 18 يوليو
+            - generic [ref=e143]: ابتداءً من 55 ر.س
+        - button "سيكس فلاغز مدينة القدية" [ref=e145] [cursor=pointer]:
+          - generic [ref=e146]: اكسب 2X نقاط
+          - generic [ref=e149]:
+            - generic [ref=e150]: مدن ترفيهية
+            - generic [ref=e151]: سيكس فلاغز مدينة القدية
+            - generic [ref=e152]: مدينة القدية، القدية
+            - generic [ref=e157]:
+              - generic [ref=e158]: 4:00 م
+              - generic [ref=e162]: 2 أغسطس
+            - generic [ref=e166]: ابتداءً من 170 ر.س
+        - button "أكواريبيا مدينة القدية" [ref=e168] [cursor=pointer]:
+          - generic [ref=e169]: اكسب 2X نقاط
+          - generic [ref=e172]:
+            - generic [ref=e173]: ألعاب مائية
+            - generic [ref=e174]: أكواريبيا مدينة القدية
+            - generic [ref=e175]: مدينة القدية، القدية
+            - generic [ref=e180]:
+              - generic [ref=e181]: 2:00 م
+              - generic [ref=e185]: 10 أغسطس
+            - generic [ref=e189]: ابتداءً من 130 ر.س
+        - button "BattleKart الرياض" [ref=e191] [cursor=pointer]:
+          - generic [ref=e192]: اكسب 2X نقاط
+          - generic [ref=e200]:
+            - generic [ref=e201]: ألعاب
+            - generic [ref=e202]: BattleKart الرياض
+            - generic [ref=e203]: غرناطة مول، غرناطة
+            - generic [ref=e208]:
+              - generic [ref=e209]: 6:00 م
+              - generic [ref=e213]: 22 يوليو
+            - generic [ref=e217]: ابتداءً من 110 ر.س
+        - button "سوبر بارك الرياض" [ref=e219] [cursor=pointer]:
+          - generic [ref=e220]: اكسب 2X نقاط
+          - generic [ref=e228]:
+            - generic [ref=e229]: عائلية
+            - generic [ref=e230]: سوبر بارك الرياض
+            - generic [ref=e231]: خريص، خريص
+            - generic [ref=e236]:
+              - generic [ref=e237]: 11:00 ص
+              - generic [ref=e241]: 20 يوليو
+            - generic [ref=e245]: ابتداءً من 80 ر.س
+        - button "SENSAS تجربة الحواس الخمس" [ref=e247] [cursor=pointer]:
+          - generic [ref=e248]: اكسب 2X نقاط
+          - generic [ref=e253]:
+            - generic [ref=e254]: تجارب
+            - generic [ref=e255]: SENSAS تجربة الحواس الخمس
+            - generic [ref=e256]: روف مول، الياسمين
+            - generic [ref=e261]:
+              - generic [ref=e262]: 8:00 م
+              - generic [ref=e266]: 5 أغسطس
+            - generic [ref=e270]: ابتداءً من 120 ر.س
+        - button "يلا بولينغ" [ref=e272] [cursor=pointer]:
+          - generic [ref=e273]: اكسب 2X نقاط
+          - generic [ref=e281]:
+            - generic [ref=e282]: ألعاب
+            - generic [ref=e283]: يلا بولينغ
+            - generic [ref=e284]: غرناطة مول، غرناطة
+            - generic [ref=e289]:
+              - generic [ref=e290]: 7:00 م
+              - generic [ref=e294]: 19 يوليو
+            - generic [ref=e298]: ابتداءً من 60 ر.س
+        - button "تجربة صخرة الفيل، العلا" [ref=e300] [cursor=pointer]:
+          - generic [ref=e301]: اكسب 3X نقاط
+          - generic [ref=e304]:
+            - generic [ref=e305]: تجارب
+            - generic [ref=e306]: تجربة صخرة الفيل، العلا
+            - generic [ref=e307]: صخرة الفيل، العلا
+            - generic [ref=e312]:
+              - generic [ref=e313]: 5:00 م
+              - generic [ref=e317]: 15 سبتمبر
+            - generic [ref=e321]: ابتداءً من 220 ر.س
+        - button "أمسية مرايا العلا" [ref=e323] [cursor=pointer]:
+          - generic [ref=e324]: اكسب 3X نقاط
+          - generic [ref=e327]:
+            - generic [ref=e328]: تجارب
+            - generic [ref=e329]: أمسية مرايا العلا
+            - generic [ref=e330]: قاعة مرايا، العلا
+            - generic [ref=e335]:
+              - generic [ref=e336]: 8:30 م
+              - generic [ref=e340]: 20 نوفمبر
+            - generic [ref=e344]: ابتداءً من 550 ر.س
+        - button "كورنيش جدة والنافورة" [ref=e346] [cursor=pointer]:
+          - generic [ref=e347]: اكسب 2X نقاط
+          - generic [ref=e350]:
+            - generic [ref=e351]: عائلية
+            - generic [ref=e352]: كورنيش جدة والنافورة
+            - generic [ref=e353]: كورنيش جدة، جدة
+            - generic [ref=e358]:
+              - generic [ref=e359]: 6:00 م
+              - generic [ref=e363]: 14 أغسطس
+            - generic [ref=e367]: ابتداءً من 30 ر.س
+        - button "جدة التاريخية — البلد" [ref=e369] [cursor=pointer]:
+          - generic [ref=e370]: اكسب 2X نقاط
+          - generic [ref=e373]:
+            - generic [ref=e374]: تجارب
+            - generic [ref=e375]: جدة التاريخية — البلد
+            - generic [ref=e376]: حي البلد، جدة
+            - generic [ref=e381]:
+              - generic [ref=e382]: 4:30 م
+              - generic [ref=e386]: 5 سبتمبر
+            - generic [ref=e390]: ابتداءً من 80 ر.س
+        - button "عشاء تراس البجيري، الدرعية" [ref=e392] [cursor=pointer]:
+          - generic [ref=e393]: اكسب 2X نقاط
+          - generic [ref=e396]:
+            - generic [ref=e397]: مطاعم
+            - generic [ref=e398]: عشاء تراس البجيري، الدرعية
+            - generic [ref=e399]: تراس البجيري، الدرعية
+            - generic [ref=e404]:
+              - generic [ref=e405]: 7:30 م
+              - generic [ref=e409]: 30 يوليو
+            - generic [ref=e413]: ابتداءً من 180 ر.س
+        - button "رحلة أبها وعسير" [ref=e415] [cursor=pointer]:
+          - generic [ref=e416]: اكسب 3X نقاط
+          - generic [ref=e419]:
+            - generic [ref=e420]: تجارب
+            - generic [ref=e421]: رحلة أبها وعسير
+            - generic [ref=e422]: تلفريك أبها، أبها
+            - generic [ref=e427]:
+              - generic [ref=e428]: 8:00 ص
+              - generic [ref=e432]: 25 سبتمبر
+            - generic [ref=e436]: ابتداءً من 320 ر.س
+        - button "حافة العالم" [ref=e438] [cursor=pointer]:
+          - generic [ref=e439]: اكسب 3X نقاط
+          - generic [ref=e442]:
+            - generic [ref=e443]: تجارب
+            - generic [ref=e444]: حافة العالم
+            - generic [ref=e445]: جبل فهرين، خارج الرياض
+            - generic [ref=e450]:
+              - generic [ref=e451]: 3:00 م
+              - generic [ref=e455]: 10 أكتوبر
+            - generic [ref=e459]: ابتداءً من 250 ر.س
+        - button "بوليفارد وورلد" [ref=e461] [cursor=pointer]:
+          - generic [ref=e462]: اكسب 3X نقاط
+          - generic [ref=e465]:
+            - generic [ref=e466]: مدن ترفيهية
+            - generic [ref=e467]: بوليفارد وورلد
+            - generic [ref=e468]: بوليفارد وورلد، الرياض
+            - generic [ref=e473]:
+              - generic [ref=e474]: 7:00 م
+              - generic [ref=e478]: 28 يوليو
+            - generic [ref=e482]: ابتداءً من 90 ر.س
+    - generic [ref=e484]:
+      - generic [ref=e485]:
+        - heading "فعاليات هذا الأسبوع" [level=2] [ref=e486]
+        - link "عرض الكل" [ref=e487] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e488]:
+        - button "25 يول مباراة الهلال" [ref=e489] [cursor=pointer]:
+          - generic [ref=e490]: 25 يول
+          - heading "مباراة الهلال" [level=3] [ref=e494]
+        - button "18 يول سينما VOX" [ref=e495] [cursor=pointer]:
+          - generic [ref=e496]: 18 يول
+          - heading "سينما VOX" [level=3] [ref=e503]
+        - button "2 أغس سيكس فلاغز" [ref=e504] [cursor=pointer]:
+          - generic [ref=e505]: 2 أغس
+          - heading "سيكس فلاغز" [level=3] [ref=e509]
+        - button "10 أغس أكواريبيا مدينة" [ref=e510] [cursor=pointer]:
+          - generic [ref=e511]: 10 أغس
+          - heading "أكواريبيا مدينة" [level=3] [ref=e515]
+        - button "22 يول BattleKart الرياض" [ref=e516] [cursor=pointer]:
+          - generic [ref=e517]: 22 يول
+          - heading "BattleKart الرياض" [level=3] [ref=e526]
+  - navigation "التنقل" [ref=e527]:
+    - link "الرئيسية" [ref=e528] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=e533] [cursor=pointer]:
+      - /url: calendar.html
+    - link "البطاقات" [ref=e539] [cursor=pointer]:
+      - /url: cards.html
+    - link "الفعاليات" [ref=e544] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=e549] [cursor=pointer]:
+      - /url: more.html

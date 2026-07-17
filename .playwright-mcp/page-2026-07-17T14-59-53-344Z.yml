@@ -1,0 +1,56 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic "عزوة" [ref=e4]:
+      - img "عزوة AZWA" [ref=e5]
+    - generic [ref=e6]:
+      - button "الإشعارات" [ref=e7] [cursor=pointer]
+      - button "الإعدادات" [ref=e11] [cursor=pointer]
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - generic [ref=e17]: أ
+      - generic [ref=e18]:
+        - generic [ref=e19]: زائر
+        - generic [ref=e20]: عضو موثّق
+    - generic [ref=e23]:
+      - button "محفظتي" [ref=e24] [cursor=pointer]
+      - generic [ref=e27]:
+        - generic [ref=e28]: رصيد عزوة
+        - generic [ref=e29]: 0 نقطة
+        - generic [ref=e31]: تعادل 0 ر.س
+    - generic [ref=e32]:
+      - button "تذاكري" [ref=e33] [cursor=pointer]
+      - button "المفضلة" [ref=e38] [cursor=pointer]
+      - button "سجل النشاط" [ref=e43] [cursor=pointer]
+      - button "التقييمات" [ref=e49] [cursor=pointer]
+    - generic [ref=e54]:
+      - button "عروضي وكوبوناتي" [ref=e55] [cursor=pointer]
+      - button "دعوة الأصدقاء اكسب نقاط" [ref=e64] [cursor=pointer]:
+        - generic [ref=e70]: دعوة الأصدقاء
+        - generic [ref=e71]: اكسب نقاط
+      - button "عناويني" [ref=e75] [cursor=pointer]
+      - button "طرق الدفع •••• ••••" [ref=e84] [cursor=pointer]:
+        - generic [ref=e88]: طرق الدفع
+        - generic [ref=e89]: •••• ••••
+      - button "المساعدة والدعم" [ref=e93] [cursor=pointer]
+      - button "عن عزوة" [ref=e102] [cursor=pointer]
+    - generic [ref=e111]:
+      - generic [ref=e112]:
+        - generic [ref=e117]: الإشعارات
+        - switch "تفعيل الإشعارات" [checked] [ref=e118]
+      - button "اللغة العربية" [ref=e119] [cursor=pointer]:
+        - generic [ref=e124]: اللغة
+        - generic [ref=e125]: العربية
+      - button "سياسة الخصوصية" [ref=e129] [cursor=pointer]
+      - button "الشروط والأحكام" [ref=e137] [cursor=pointer]
+    - button "تسجيل الدخول" [active] [ref=e146] [cursor=pointer]
+  - navigation "التنقل" [ref=e150]:
+    - link "الرئيسية" [ref=e151] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=e156] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=e162] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=e168] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=e173] [cursor=pointer]:
+      - /url: more.html

@@ -1,0 +1,3 @@
+[     691ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5555/index.html:0
+[     727ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:5555/favicon.ico:0
+[   40828ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://wtaveucbqvppddckihqy.supabase.co/auth/v1/signup:0

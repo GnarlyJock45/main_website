@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-07-16T21:36:01.431Z",
-  "projectRoot": "D:\\06-Projects\\13-amad_hackathon\\main_website",
+  "timestamp": "2026-07-17T19:10:34.937Z",
+  "projectRoot": "d:\\06-Projects\\13-amad_hackathon\\main_website",
   "structure": {
     "hasPackageJson": false,
     "hasTsConfig": false,
     "hasClaudeConfig": true,
     "hasClaudeFlow": true
   },
-  "scannedAt": 1784237761431
+  "scannedAt": 1784315434938
 }

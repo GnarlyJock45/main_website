@@ -1,0 +1,635 @@
+"""
+Azwa | Flask backend
+
+Single-file Flask app that replaces the Supabase backend. Uses SQLite for
+storage and identifies users by an X-User-Id header (a UUID the browser
+generates and stores in localStorage). No passwords, no email — anonymous
+identity is enough for a hackathon prototype.
+
+Endpoints:
+    GET    /api/health
+    POST   /api/session/init
+    POST   /api/session/reset
+
+    GET    /api/profile
+    PATCH  /api/profile
+
+    GET    /api/wallet
+
+    GET    /api/cards
+    POST   /api/cards
+    PATCH  /api/cards/<card_id>
+    DELETE /api/cards/<card_id>
+
+    GET    /api/events
+    GET    /api/packages
+
+    GET    /api/favorites
+    POST   /api/favorites/<event_id>
+    DELETE /api/favorites/<event_id>
+
+    GET    /api/bookings
+
+    POST   /api/rpc/recharge         { amount }
+    POST   /api/rpc/book_event       { event_id, quantity }
+    POST   /api/rpc/book_package     { package_id, quantity }
+
+Run locally:
+    pip install -r requirements.txt
+    python app.py            # dev server on :5000
+
+Deploy (Render):
+    gunicorn app:app --bind 0.0.0.0:$PORT
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import sqlite3
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from threading import Lock
+
+from flask import Flask, g, jsonify, request
+from flask_cors import CORS
+
+# --------------------------------------------------------------------------- #
+# Config
+# --------------------------------------------------------------------------- #
+
+BASE_DIR = Path(__file__).parent
+DB_PATH = Path(os.environ.get("AZWA_DB_PATH", BASE_DIR / "azwa.db"))
+SCHEMA_PATH = BASE_DIR / "schema.sql"
+SEED_PATH = BASE_DIR / "seed.sql"
+
+# One-time init lock (in case gunicorn spawns multiple workers concurrently).
+_init_lock = Lock()
+_initialized = False
+
+
+# --------------------------------------------------------------------------- #
+# DB helpers
+# --------------------------------------------------------------------------- #
+
+def get_db() -> sqlite3.Connection:
+    if "db" not in g:
+        conn = sqlite3.connect(DB_PATH, isolation_level=None)  # autocommit; use explicit BEGIN
+        conn.row_factory = sqlite3.Row
+        conn.execute("pragma foreign_keys = on")
+        conn.execute("pragma journal_mode = wal")
+        g.db = conn
+    return g.db
+
+
+def close_db(_exc=None):
+    conn = g.pop("db", None)
+    if conn is not None:
+        conn.close()
+
+
+def init_db_if_needed():
+    """Runs schema (idempotent) and seeds if the events table is empty."""
+    global _initialized
+    with _init_lock:
+        if _initialized:
+            return
+        conn = sqlite3.connect(DB_PATH, isolation_level=None)
+        conn.execute("pragma foreign_keys = on")
+        try:
+            conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+            cnt = conn.execute("select count(*) from events").fetchone()[0]
+            if cnt == 0:
+                conn.executescript(SEED_PATH.read_text(encoding="utf-8"))
+        finally:
+            conn.close()
+        _initialized = True
+
+
+# --------------------------------------------------------------------------- #
+# App factory
+# --------------------------------------------------------------------------- #
+
+app = Flask(__name__)
+# Permissive CORS for the prototype. Tighten in production.
+CORS(app, resources={r"/api/*": {"origins": "*"}},
+     supports_credentials=False, allow_headers=["Content-Type", "X-User-Id"])
+
+app.teardown_appcontext(close_db)
+
+
+@app.before_request
+def _ensure_db():
+    init_db_if_needed()
+
+
+# --------------------------------------------------------------------------- #
+# Helpers
+# --------------------------------------------------------------------------- #
+
+UUID_RE = re.compile(r"^[0-9a-fA-F-]{36}$")
+
+
+def new_uuid() -> str:
+    return str(uuid.uuid4())
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def bad(msg: str, code: int = 400):
+    return jsonify({"error": msg}), code
+
+
+def current_user_id() -> str | None:
+    uid = request.headers.get("X-User-Id", "").strip()
+    return uid if UUID_RE.match(uid or "") else None
+
+
+def require_user() -> str:
+    """Returns the user id or aborts with a 401.
+
+    If the caller supplies a well-formed UUID but the user isn't in the DB yet,
+    we lazily provision them (idempotent). This matches the Supabase behavior
+    where the auth trigger auto-created profile+wallet+card on first login.
+    """
+    uid = current_user_id()
+    if not uid:
+        raise ApiError("missing or invalid X-User-Id header", 401)
+    ensure_user_exists(uid)
+    return uid
+
+
+class ApiError(Exception):
+    def __init__(self, msg: str, code: int = 400):
+        super().__init__(msg)
+        self.msg = msg
+        self.code = code
+
+
+@app.errorhandler(ApiError)
+def _api_error(err: ApiError):
+    return jsonify({"error": err.msg}), err.code
+
+
+DEFAULT_FIRST_NAME = "أحمد"
+DEFAULT_LAST_NAME = "العتيبي"
+
+
+def ensure_user_exists(uid: str) -> None:
+    """Idempotent: create profile + wallet + default card the first time we see a user id."""
+    db = get_db()
+    row = db.execute("select 1 from profiles where id = ?", (uid,)).fetchone()
+    if row:
+        return
+    with db:  # transaction
+        db.execute("BEGIN")
+        try:
+            db.execute(
+                "insert into profiles (id, first_name, last_name) values (?, ?, ?)",
+                (uid, DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME),
+            )
+            db.execute(
+                "insert into wallets (user_id, balance, points) values (?, 250.00, 500)",
+                (uid,),
+            )
+            # Default personal card with the user's name as the label
+            db.execute(
+                """insert into cards (id, user_id, brand, last4, linked, card_type, label)
+                   values (?, ?, 'VISA', '5678', 1, 'personal', ?)""",
+                (new_uuid(), uid, f"{DEFAULT_FIRST_NAME} {DEFAULT_LAST_NAME}"),
+            )
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+
+
+def row_to_dict(row: sqlite3.Row | None) -> dict | None:
+    if row is None:
+        return None
+    return {k: row[k] for k in row.keys()}
+
+
+# --------------------------------------------------------------------------- #
+# Endpoints
+# --------------------------------------------------------------------------- #
+
+@app.get("/api/health")
+def health():
+    return {"ok": True, "time": now_iso()}
+
+
+# ---------- Session ----------
+
+@app.post("/api/session/init")
+def session_init():
+    """Provisions the user (idempotent) and returns their identity + wallet.
+    The browser calls this on every page load to make sure the row exists."""
+    uid = require_user()
+    return _load_bootstrap(uid)
+
+
+@app.post("/api/session/reset")
+def session_reset():
+    """Wipes this user's data. Called by the "reset demo" button."""
+    uid = current_user_id()
+    if not uid:
+        return bad("missing X-User-Id", 401)
+    db = get_db()
+    with db:
+        db.execute("BEGIN")
+        try:
+            db.execute("delete from profiles where id = ?", (uid,))  # cascade takes wallets, cards, bookings, etc.
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+    # Re-provision fresh so the caller can continue immediately
+    ensure_user_exists(uid)
+    return _load_bootstrap(uid)
+
+
+def _load_bootstrap(uid: str) -> dict:
+    db = get_db()
+    profile = row_to_dict(db.execute(
+        "select id, first_name, last_name, phone, avatar_url, verified from profiles where id = ?",
+        (uid,)).fetchone())
+    wallet = row_to_dict(db.execute(
+        "select balance, points from wallets where user_id = ?", (uid,)).fetchone())
+    cards = [row_to_dict(r) for r in db.execute(
+        """select id, brand, last4, linked, card_type, label, created_at
+           from cards where user_id = ? order by created_at""", (uid,)).fetchall()]
+    return jsonify({"profile": profile, "wallet": wallet, "cards": cards})
+
+
+# ---------- Profile ----------
+
+@app.get("/api/profile")
+def profile_get():
+    uid = require_user()
+    row = row_to_dict(get_db().execute(
+        "select id, first_name, last_name, phone, avatar_url, verified from profiles where id = ?",
+        (uid,)).fetchone())
+    return jsonify(row)
+
+
+@app.patch("/api/profile")
+def profile_patch():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    fields = {}
+    for k in ("first_name", "last_name", "phone", "avatar_url"):
+        if k in body:
+            fields[k] = body[k]
+    if not fields:
+        return bad("no valid fields")
+    sets = ", ".join(f"{k} = ?" for k in fields) + ", updated_at = ?"
+    params = list(fields.values()) + [now_iso(), uid]
+    get_db().execute(f"update profiles set {sets} where id = ?", params)
+    return {"ok": True}
+
+
+# ---------- Wallet ----------
+
+@app.get("/api/wallet")
+def wallet_get():
+    uid = require_user()
+    row = row_to_dict(get_db().execute(
+        "select balance, points from wallets where user_id = ?", (uid,)).fetchone())
+    return jsonify(row)
+
+
+# ---------- Cards ----------
+
+@app.get("/api/cards")
+def cards_list():
+    uid = require_user()
+    rows = [row_to_dict(r) for r in get_db().execute(
+        """select id, brand, last4, linked, card_type, label, created_at
+           from cards where user_id = ? order by created_at""", (uid,)).fetchall()]
+    return jsonify(rows)
+
+
+@app.post("/api/cards")
+def cards_link():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    last4 = str(body.get("last4", "")).strip()
+    if not re.fullmatch(r"\d{4}", last4):
+        return bad("last4 must be 4 digits")
+    brand = str(body.get("brand") or "VISA")
+    card_type = str(body.get("card_type") or "personal")
+    label = body.get("label")
+    cid = new_uuid()
+    get_db().execute(
+        """insert into cards (id, user_id, brand, last4, linked, card_type, label)
+           values (?, ?, ?, ?, 1, ?, ?)""",
+        (cid, uid, brand, last4, card_type, label))
+    row = row_to_dict(get_db().execute(
+        """select id, brand, last4, linked, card_type, label, created_at
+           from cards where id = ?""", (cid,)).fetchone())
+    return jsonify(row), 201
+
+
+@app.patch("/api/cards/<card_id>")
+def cards_update(card_id: str):
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    allowed = {"brand", "last4", "linked", "card_type", "label"}
+    fields = {k: v for k, v in body.items() if k in allowed}
+    if not fields:
+        return bad("no valid fields")
+    sets = ", ".join(f"{k} = ?" for k in fields)
+    params = list(fields.values()) + [card_id, uid]
+    cur = get_db().execute(
+        f"update cards set {sets} where id = ? and user_id = ?", params)
+    if cur.rowcount == 0:
+        return bad("card not found", 404)
+    row = row_to_dict(get_db().execute(
+        """select id, brand, last4, linked, card_type, label, created_at
+           from cards where id = ?""", (card_id,)).fetchone())
+    return jsonify(row)
+
+
+@app.delete("/api/cards/<card_id>")
+def cards_delete(card_id: str):
+    uid = require_user()
+    cur = get_db().execute(
+        "delete from cards where id = ? and user_id = ?", (card_id, uid))
+    if cur.rowcount == 0:
+        return bad("card not found", 404)
+    return {"ok": True}
+
+
+# ---------- Events ----------
+
+@app.get("/api/events")
+def events_list():
+    rows = [row_to_dict(r) for r in get_db().execute(
+        "select * from events order by event_date").fetchall()]
+    # Normalize booleans (SQLite stores them as 0/1)
+    for r in rows:
+        r["popular"] = bool(r["popular"])
+        r["nearby"] = bool(r["nearby"])
+    return jsonify(rows)
+
+
+# ---------- Packages ----------
+
+@app.get("/api/packages")
+def packages_list():
+    db = get_db()
+    packages = [row_to_dict(r) for r in db.execute(
+        """select id, title_ar, title_en, description, price, points, multiplier,
+                  image_url, image_pos, cover_category, region, popular, created_at
+           from packages order by created_at""").fetchall()]
+    # Fetch all items in one query, then group
+    items = db.execute(
+        "select package_id, event_id, position from package_items order by package_id, position"
+    ).fetchall()
+    by_pkg: dict[int, list[dict]] = {}
+    for r in items:
+        by_pkg.setdefault(r["package_id"], []).append(
+            {"event_id": r["event_id"], "position": r["position"]})
+    for p in packages:
+        p["popular"] = bool(p["popular"])
+        p["items"] = by_pkg.get(p["id"], [])
+    return jsonify(packages)
+
+
+# ---------- Favorites ----------
+
+@app.get("/api/favorites")
+def favorites_list():
+    uid = require_user()
+    rows = get_db().execute(
+        "select event_id from favorites where user_id = ?", (uid,)).fetchall()
+    return jsonify([r["event_id"] for r in rows])
+
+
+@app.post("/api/favorites/<int:event_id>")
+def favorites_add(event_id: int):
+    uid = require_user()
+    try:
+        get_db().execute(
+            "insert into favorites (user_id, event_id) values (?, ?)",
+            (uid, event_id))
+    except sqlite3.IntegrityError:
+        pass  # already favorited, or event doesn't exist — treat as OK
+    return {"ok": True}
+
+
+@app.delete("/api/favorites/<int:event_id>")
+def favorites_remove(event_id: int):
+    uid = require_user()
+    get_db().execute(
+        "delete from favorites where user_id = ? and event_id = ?",
+        (uid, event_id))
+    return {"ok": True}
+
+
+# ---------- Bookings ----------
+
+@app.get("/api/bookings")
+def bookings_list():
+    uid = require_user()
+    rows = [row_to_dict(r) for r in get_db().execute(
+        """select b.id, b.event_id, b.package_id, b.quantity, b.total_paid,
+                  b.points_earned, b.status, b.created_at,
+                  e.title_ar as event_title, p.title_ar as package_title
+           from bookings b
+           left join events   e on e.id = b.event_id
+           left join packages p on p.id = b.package_id
+           where b.user_id = ? order by b.created_at desc""",
+        (uid,)).fetchall()]
+    return jsonify(rows)
+
+
+# ---------- Transactions (activity log) ----------
+
+@app.get("/api/transactions")
+def transactions_list():
+    uid = require_user()
+    rows = [row_to_dict(r) for r in get_db().execute(
+        """select id, kind, amount, points_delta, ref_booking_id, meta, created_at
+           from transactions
+           where user_id = ? order by created_at desc""",
+        (uid,)).fetchall()]
+    # meta is stored as JSON text; deserialize for convenience
+    for r in rows:
+        try:
+            r["meta"] = json.loads(r.get("meta") or "{}")
+        except Exception:
+            r["meta"] = {}
+    return jsonify(rows)
+
+
+# ---------- RPCs (atomic wallet mutations) ----------
+
+@app.post("/api/rpc/recharge")
+def rpc_recharge():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    try:
+        amount = float(body.get("amount"))
+    except (TypeError, ValueError):
+        return bad("invalid amount")
+    if amount < 10 or amount > 10_000:
+        return bad("invalid_amount")
+
+    db = get_db()
+    with db:
+        db.execute("BEGIN")
+        try:
+            db.execute(
+                "update wallets set balance = balance + ?, updated_at = ? where user_id = ?",
+                (amount, now_iso(), uid))
+            db.execute(
+                """insert into transactions (id, user_id, kind, amount, meta)
+                   values (?, ?, 'recharge', ?, ?)""",
+                (new_uuid(), uid, amount, json.dumps({"source": "alinma"})))
+            row = db.execute(
+                "select balance from wallets where user_id = ?", (uid,)).fetchone()
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+    return jsonify({"new_balance": row["balance"]})
+
+
+@app.post("/api/rpc/book_event")
+def rpc_book_event():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    try:
+        event_id = int(body.get("event_id"))
+        quantity = int(body.get("quantity"))
+    except (TypeError, ValueError):
+        return bad("invalid parameters")
+    if not (1 <= quantity <= 20):
+        return bad("invalid_quantity")
+
+    db = get_db()
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        try:
+            event = db.execute(
+                "select price, points from events where id = ?", (event_id,)).fetchone()
+            if not event:
+                db.execute("ROLLBACK")
+                return bad("event_not_found", 404)
+            total = float(event["price"]) * quantity
+            earned = int(event["points"]) * quantity
+
+            wallet = db.execute(
+                "select balance from wallets where user_id = ?", (uid,)).fetchone()
+            if not wallet:
+                db.execute("ROLLBACK")
+                return bad("wallet_missing", 500)
+            if float(wallet["balance"]) < total:
+                db.execute("ROLLBACK")
+                return bad("insufficient_balance", 400)
+
+            db.execute(
+                """update wallets set balance = balance - ?,
+                                     points  = points  + ?,
+                                     updated_at = ?
+                   where user_id = ?""",
+                (total, earned, now_iso(), uid))
+            booking_id = new_uuid()
+            db.execute(
+                """insert into bookings (id, user_id, event_id, quantity, total_paid, points_earned)
+                   values (?, ?, ?, ?, ?, ?)""",
+                (booking_id, uid, event_id, quantity, total, earned))
+            db.execute(
+                """insert into transactions (id, user_id, kind, amount, points_delta, ref_booking_id, meta)
+                   values (?, ?, 'booking', ?, ?, ?, ?)""",
+                (new_uuid(), uid, total, earned, booking_id,
+                 json.dumps({"event_id": event_id, "qty": quantity})))
+            new_row = db.execute(
+                "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+    return jsonify({
+        "booking_id": booking_id,
+        "new_balance": new_row["balance"],
+        "new_points": new_row["points"],
+    })
+
+
+@app.post("/api/rpc/book_package")
+def rpc_book_package():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    try:
+        package_id = int(body.get("package_id"))
+        quantity = int(body.get("quantity"))
+    except (TypeError, ValueError):
+        return bad("invalid parameters")
+    if not (1 <= quantity <= 20):
+        return bad("invalid_quantity")
+
+    db = get_db()
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        try:
+            pkg = db.execute(
+                "select price, points from packages where id = ?", (package_id,)).fetchone()
+            if not pkg:
+                db.execute("ROLLBACK")
+                return bad("package_not_found", 404)
+            total = float(pkg["price"]) * quantity
+            earned = int(pkg["points"]) * quantity
+
+            wallet = db.execute(
+                "select balance from wallets where user_id = ?", (uid,)).fetchone()
+            if not wallet:
+                db.execute("ROLLBACK")
+                return bad("wallet_missing", 500)
+            if float(wallet["balance"]) < total:
+                db.execute("ROLLBACK")
+                return bad("insufficient_balance", 400)
+
+            db.execute(
+                """update wallets set balance = balance - ?,
+                                     points  = points  + ?,
+                                     updated_at = ?
+                   where user_id = ?""",
+                (total, earned, now_iso(), uid))
+            booking_id = new_uuid()
+            db.execute(
+                """insert into bookings (id, user_id, package_id, quantity, total_paid, points_earned)
+                   values (?, ?, ?, ?, ?, ?)""",
+                (booking_id, uid, package_id, quantity, total, earned))
+            db.execute(
+                """insert into transactions (id, user_id, kind, amount, points_delta, ref_booking_id, meta)
+                   values (?, ?, 'booking', ?, ?, ?, ?)""",
+                (new_uuid(), uid, total, earned, booking_id,
+                 json.dumps({"package_id": package_id, "qty": quantity})))
+            new_row = db.execute(
+                "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+    return jsonify({
+        "booking_id": booking_id,
+        "new_balance": new_row["balance"],
+        "new_points": new_row["points"],
+    })
+
+
+# --------------------------------------------------------------------------- #
+# Local dev entrypoint
+# --------------------------------------------------------------------------- #
+
+if __name__ == "__main__":
+    init_db_if_needed()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)

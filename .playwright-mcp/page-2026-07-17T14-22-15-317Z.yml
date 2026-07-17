@@ -1,0 +1,112 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic "عزوة" [ref=e4]:
+        - img "عزوة" [ref=e5]
+        - generic [ref=e6]:
+          - generic [ref=e7]: عزوة
+          - generic [ref=e8]: AZWA
+      - button "الإشعارات" [ref=e10] [cursor=pointer]
+    - main [ref=e15]:
+      - region "مرحباً test-login-debug" [ref=e382]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - text: مرحباً
+            - generic [ref=e20]: test-login-debug
+          - generic [ref=e21]: اكتشف فعاليات الرياض واستفد من نقاطك
+        - img "بطاقة عزوة" [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]: رصيد عزوة
+            - generic [ref=e26]:
+              - text: "250"
+              - generic [ref=e383]: ر.س
+            - generic [ref=e28]:
+              - generic [ref=e29]:
+                - generic [ref=e30]: نقاطك المتاحة
+                - generic [ref=e31]: 500 نقطة
+              - button "شحن الرصيد" [ref=e32] [cursor=pointer]
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - heading "مقترح لك" [level=2] [ref=e38]
+          - link "عرض الكل" [ref=e39] [cursor=pointer]:
+            - /url: events.html
+        - generic [ref=e40]:
+          - button "سينما VOX" [ref=e247] [cursor=pointer]:
+            - generic [ref=e248]: 2X نقاط
+            - generic [ref=e257]:
+              - heading "سينما VOX" [level=3] [ref=e258]
+              - generic [ref=e259]:
+                - generic [ref=e260]: 18 يوليو • 7:00 م
+                - generic [ref=e265]: VOX Riyadh Park
+              - generic [ref=e270]: ابتداءً من 55 ر.س
+          - button "BattleKart الرياض" [ref=e271] [cursor=pointer]:
+            - generic [ref=e272]: 2X نقاط
+            - generic [ref=e283]:
+              - heading "BattleKart الرياض" [level=3] [ref=e284]
+              - generic [ref=e285]:
+                - generic [ref=e286]: 22 يوليو • 6:00 م
+                - generic [ref=e291]: غرناطة مول
+              - generic [ref=e296]: ابتداءً من 110 ر.س
+          - button "مباراة الهلال × النصر" [ref=e297] [cursor=pointer]:
+            - generic [ref=e298]: 3X نقاط
+            - generic [ref=e304]:
+              - heading "مباراة الهلال × النصر" [level=3] [ref=e305]
+              - generic [ref=e306]:
+                - generic [ref=e307]: 25 يوليو • 9:00 م
+                - generic [ref=e312]: استاد المملكة أرينا
+              - generic [ref=e317]: ابتداءً من 150 ر.س
+          - button "سيكس فلاغز مدينة القدية" [ref=e318] [cursor=pointer]:
+            - generic [ref=e319]: 2X نقاط
+            - generic [ref=e325]:
+              - heading "سيكس فلاغز مدينة القدية" [level=3] [ref=e326]
+              - generic [ref=e327]:
+                - generic [ref=e328]: 2 أغسطس • 4:00 م
+                - generic [ref=e333]: مدينة القدية
+              - generic [ref=e338]: ابتداءً من 170 ر.س
+          - button "أكواريبيا مدينة القدية" [ref=e339] [cursor=pointer]:
+            - generic [ref=e340]: 2X نقاط
+            - generic [ref=e346]:
+              - heading "أكواريبيا مدينة القدية" [level=3] [ref=e347]
+              - generic [ref=e348]:
+                - generic [ref=e349]: 10 أغسطس • 2:00 م
+                - generic [ref=e354]: مدينة القدية
+              - generic [ref=e359]: ابتداءً من 130 ر.س
+      - button "3X نقاط هذا الأسبوع! استخدم بطاقتك في السينما والمطاعم حتى 20 يوليو" [ref=e154]:
+        - generic [ref=e159]:
+          - generic [ref=e160]: 3X نقاط هذا الأسبوع!
+          - generic [ref=e161]: استخدم بطاقتك في السينما والمطاعم حتى 20 يوليو
+      - generic [ref=e165]:
+        - generic [ref=e166]:
+          - heading "بالقرب منك" [level=2] [ref=e167]
+          - link "عرض الكل" [ref=e168] [cursor=pointer]:
+            - /url: map.html
+        - generic [ref=e169]:
+          - link "مطاعم" [ref=e170] [cursor=pointer]:
+            - /url: events.html?cat=food
+          - link "سينما" [ref=e175] [cursor=pointer]:
+            - /url: events.html?cat=cinema
+          - link "ترفيه" [ref=e181] [cursor=pointer]:
+            - /url: events.html?cat=themepark
+          - link "ألعاب" [ref=e186] [cursor=pointer]:
+            - /url: events.html?cat=games
+          - link "رياضة" [ref=e194] [cursor=pointer]:
+            - /url: events.html?cat=sport
+          - link "مائية" [ref=e200] [cursor=pointer]:
+            - /url: events.html?cat=water
+          - link "عائلة" [ref=e205] [cursor=pointer]:
+            - /url: events.html?cat=family
+          - link "تجارب" [ref=e210] [cursor=pointer]:
+            - /url: events.html?cat=experience
+        - generic [ref=e215]: المسافات تقريبية لأغراض العرض
+    - navigation "التنقل" [ref=e216]:
+      - link "الرئيسية" [ref=e217] [cursor=pointer]:
+        - /url: index.html
+      - link "التقويم" [ref=e222] [cursor=pointer]:
+        - /url: calendar.html
+      - link "الخريطة" [ref=e228] [cursor=pointer]:
+        - /url: map.html
+      - link "الفعاليات" [ref=e234] [cursor=pointer]:
+        - /url: events.html
+      - link "المزيد" [ref=e239] [cursor=pointer]:
+        - /url: more.html
+  - generic [ref=e377]: تم إنشاء حسابك، مرحباً بك!

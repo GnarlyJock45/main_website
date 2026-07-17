@@ -1,7 +1,9 @@
 /* ==========================================================================
    Azwa | Shared app.js
-   Data, state (localStorage), UI wiring for all pages.
+   Data + UI wiring. All server I/O goes through js/api.js.
    ========================================================================== */
+
+import * as api from './api.js';
 
 /* ---------- Data ---------- */
 const CATEGORIES = [
@@ -42,7 +44,9 @@ const CATEGORY_STYLE = {
   cinema: 'purple'
 };
 
-const EVENTS = [
+// Events are loaded from Supabase on boot. Kept as an offline seed so
+// unauthenticated visitors still see something before the network completes.
+let EVENTS = [
   {
     id: 1,
     titleAr: 'مباراة الهلال × النصر',
@@ -76,6 +80,8 @@ const EVENTS = [
     price: 55,
     points: 90,
     multiplier: '2X',
+    image: 'assets/events/vox.jpg',
+    imagePos: 'center',
     desc: 'استمتع بأحدث الأفلام العربية والعالمية بتجربة عرض متميزة، مع خصم 20% لأعضاء عزوة.',
     popular: true,
     nearby: true,
@@ -93,7 +99,7 @@ const EVENTS = [
     distanceKm: 38,
     price: 170,
     points: 340,
-    multiplier: '2X',
+    multiplier: '3X',
     image: 'assets/events/six-flags.jpg',
     imagePos: 'center',
     desc: 'أكبر مدينة ألعاب في المنطقة تفتح أبوابها. أفعوانيات عالمية، عروض ترفيهية، ومغامرات لا تنتهي.',
@@ -134,6 +140,8 @@ const EVENTS = [
     price: 110,
     points: 150,
     multiplier: '2X',
+    image: 'assets/events/battlekart.jpg',
+    imagePos: 'center',
     desc: 'كارتينج تفاعلي بتقنية الواقع المعزز — تحدَّ أصدقاءك في سباقات مبتكرة.',
     popular: true,
     nearby: true,
@@ -170,6 +178,8 @@ const EVENTS = [
     price: 120,
     points: 180,
     multiplier: '2X',
+    image: 'assets/events/sensas.jpg',
+    imagePos: 'center',
     desc: 'رحلة حسية فريدة تُشغّل حواسك الخمس عبر ألغاز وتحديات في بيئات مصممة بعناية.',
     popular: false,
     nearby: true,
@@ -188,10 +198,224 @@ const EVENTS = [
     price: 60,
     points: 80,
     multiplier: '2X',
+    image: 'assets/events/bowling.jpg',
+    imagePos: 'center',
     desc: 'أمسية بولينغ عائلية مع خصم 20% لأعضاء عزوة.',
     popular: false,
     nearby: true,
     mapQuery: 'Granada Mall Riyadh'
+  },
+  // ---------- KSA-wide destinations (also present in Supabase; local IDs may not match server IDs — server hydration replaces this whole array) ----------
+  {
+    id: 20,
+    titleAr: 'تجربة صخرة الفيل، العلا',
+    titleEn: 'Elephant Rock, AlUla',
+    category: 'experience',
+    date: '2026-09-15',
+    time: '5:00 م',
+    venue: 'صخرة الفيل',
+    district: 'العلا',
+    distanceKm: 1080,
+    price: 220,
+    points: 320,
+    multiplier: '3X',
+    image: 'assets/events/alula-elephant-rock.jpg',
+    imagePos: 'center 55%',
+    desc: 'زيارة إلى معلم صخرة الفيل الشهير عند غروب الشمس مع جلسة قهوة عربية.',
+    popular: true,
+    nearby: false,
+    mapQuery: 'Elephant Rock AlUla'
+  },
+  {
+    id: 21,
+    titleAr: 'أمسية مرايا العلا',
+    titleEn: 'Maraya Concert Hall, AlUla',
+    category: 'experience',
+    date: '2026-11-20',
+    time: '8:30 م',
+    venue: 'قاعة مرايا',
+    district: 'العلا',
+    distanceKm: 1080,
+    price: 550,
+    points: 900,
+    multiplier: '3X',
+    image: 'assets/events/alula-maraya.jpg',
+    imagePos: 'center',
+    desc: 'حفل موسيقي داخل أكبر مبنى بواجهة مرآة في العالم، في قلب صحراء العلا.',
+    popular: true,
+    nearby: false,
+    mapQuery: 'Maraya Concert Hall AlUla'
+  },
+  {
+    id: 22,
+    titleAr: 'كورنيش جدة والنافورة',
+    titleEn: 'Jeddah Corniche',
+    category: 'family',
+    date: '2026-08-14',
+    time: '6:00 م',
+    venue: 'كورنيش جدة',
+    district: 'جدة',
+    distanceKm: 950,
+    price: 30,
+    points: 40,
+    multiplier: '2X',
+    image: 'assets/events/jeddah-corniche.jpg',
+    imagePos: 'center',
+    desc: 'أمسية عائلية على الواجهة البحرية، وشاهد نافورة الملك فهد.',
+    popular: true,
+    nearby: false,
+    mapQuery: 'Jeddah Corniche'
+  },
+  {
+    id: 23,
+    titleAr: 'جدة التاريخية — البلد',
+    titleEn: 'Historic Jeddah (Al-Balad)',
+    category: 'experience',
+    date: '2026-09-05',
+    time: '4:30 م',
+    venue: 'حي البلد',
+    district: 'جدة',
+    distanceKm: 950,
+    price: 80,
+    points: 130,
+    multiplier: '2X',
+    image: 'assets/events/jeddah-al-balad.jpg',
+    imagePos: 'center',
+    desc: 'جولة إرشادية في الحيّ المُدرج ضمن التراث العالمي: البيوت الحجازية والرواشين والأزقة.',
+    popular: false,
+    nearby: false,
+    mapQuery: 'Al Balad Jeddah'
+  },
+  {
+    id: 24,
+    titleAr: 'عشاء تراس البجيري، الدرعية',
+    titleEn: 'Bujairi Terrace, Diriyah',
+    category: 'food',
+    date: '2026-07-30',
+    time: '7:30 م',
+    venue: 'تراس البجيري',
+    district: 'الدرعية',
+    distanceKm: 25,
+    price: 180,
+    points: 260,
+    multiplier: '2X',
+    image: 'assets/events/diriyah-bujairi.jpg',
+    imagePos: 'center',
+    desc: 'عشاء نجدي معاصر بإطلالة على حي الطريف التاريخي في الدرعية.',
+    popular: true,
+    nearby: true,
+    mapQuery: 'Bujairi Terrace Diriyah'
+  },
+  {
+    id: 25,
+    titleAr: 'رحلة أبها وعسير',
+    titleEn: 'Abha & Aseer Highlands',
+    category: 'experience',
+    date: '2026-09-25',
+    time: '8:00 ص',
+    venue: 'تلفريك أبها',
+    district: 'أبها',
+    distanceKm: 900,
+    price: 320,
+    points: 480,
+    multiplier: '3X',
+    image: 'assets/events/abha-aseer.jpg',
+    imagePos: 'center',
+    desc: 'يوم كامل بين مرتفعات عسير والقرى المدرّجة، مع جولة تلفريك تُطل على الجبال الخضراء.',
+    popular: false,
+    nearby: false,
+    mapQuery: 'Abha Cable Car'
+  },
+  {
+    id: 26,
+    titleAr: 'حافة العالم',
+    titleEn: 'Edge of the World (Jebel Fihrayn)',
+    category: 'experience',
+    date: '2026-10-10',
+    time: '3:00 م',
+    venue: 'جبل فهرين',
+    district: 'خارج الرياض',
+    distanceKm: 95,
+    price: 250,
+    points: 400,
+    multiplier: '3X',
+    image: 'assets/events/edge-of-world.jpg',
+    imagePos: 'center',
+    desc: 'رحلة بالدفع الرباعي إلى الحافة الشهيرة، مع غروب الشمس والعشاء في المخيم.',
+    popular: true,
+    nearby: false,
+    mapQuery: 'Edge of the World Riyadh'
+  },
+  {
+    id: 27,
+    titleAr: 'بوليفارد وورلد',
+    titleEn: 'Boulevard World, Riyadh',
+    category: 'themepark',
+    date: '2026-07-28',
+    time: '7:00 م',
+    venue: 'بوليفارد وورلد',
+    district: 'الرياض',
+    distanceKm: 5,
+    price: 90,
+    points: 130,
+    multiplier: '3X',
+    image: 'assets/events/riyadh-boulevard.jpg',
+    imagePos: 'center',
+    desc: 'تنقّل بين مناطق العالم في ليلة واحدة — الصين، إسبانيا، اليونان، أمريكا — مع عروض حية ومطاعم.',
+    popular: true,
+    nearby: true,
+    mapQuery: 'Boulevard World Riyadh'
+  }
+];
+
+// Packages: bundles of events sold as one purchase. Local seed only — replaced
+// by loadPackagesFromServer() on boot. eventIds reference local EVENTS ids;
+// after server hydration they reference server ids from the packages table.
+let PACKAGES = [
+  {
+    id: 101,
+    titleAr: 'مغامرة العلا',
+    titleEn: 'AlUla Adventure',
+    desc: 'باقة تجمع صخرة الفيل وأمسية مرايا — بسعر أقل من شرائهما منفصلين.',
+    price: 700,
+    points: 1300,
+    multiplier: '3X',
+    image: 'assets/events/alula-elephant-rock.jpg',
+    imagePos: 'center 55%',
+    coverCategory: 'experience',
+    region: 'AlUla',
+    popular: true,
+    eventIds: [20, 21]
+  },
+  {
+    id: 102,
+    titleAr: 'عطلة نهاية أسبوع في جدة',
+    titleEn: 'Jeddah Weekend',
+    desc: 'يومان في جدة: نزهة على الكورنيش وجولة في البلد التاريخية.',
+    price: 100,
+    points: 200,
+    multiplier: '2X',
+    image: 'assets/events/jeddah-corniche.jpg',
+    imagePos: 'center',
+    coverCategory: 'family',
+    region: 'Jeddah',
+    popular: true,
+    eventIds: [22, 23]
+  },
+  {
+    id: 103,
+    titleAr: 'ثلاثية الرياض العائلية',
+    titleEn: 'Riyadh Family Trio',
+    desc: 'يوم في سيكس فلاغز + سوبر بارك + جولة في بوليفارد وورلد. توفير على السعر الكامل.',
+    price: 300,
+    points: 600,
+    multiplier: '3X',
+    image: 'assets/events/six-flags.jpg',
+    imagePos: 'center',
+    coverCategory: 'themepark',
+    region: 'Riyadh',
+    popular: true,
+    eventIds: [4, 8, 27]  // Six Flags, SuperPark, Boulevard World (local seed IDs)
   }
 ];
 
@@ -217,63 +441,84 @@ function mapLinkSrc(query) {
   return `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
 }
 
-/* ---------- State (localStorage) ---------- */
-const STORAGE_KEY = 'azwa.v1';
+/* ---------- State (backend-backed) ----------
+   With anonymous auth, every browser gets its own Supabase user automatically.
+   The DEFAULT_STATE below is only shown for the ~200ms between page paint and
+   the first backend hydration.
+*/
+// Default identity shown before the server hydrates + as fallback when the
+// user hasn't personalized their profile yet. Kept in sync with the backend
+// defaults so first-time users see a coherent name/card holder throughout.
+const DEFAULT_FIRST = 'أحمد';
+const DEFAULT_LAST  = 'العتيبي';
+const DEFAULT_FULL  = `${DEFAULT_FIRST} ${DEFAULT_LAST}`;
 
 const DEFAULT_STATE = {
-  balance: 1250.50,
-  points: 3480,
+  authed: true,
+  balance: 0,
+  points: 0,
   user: {
-    firstName: 'أحمد',
-    lastName: 'العتيبي',
-    fullName: 'أحمد العتيبي',
-    email: 'ahmed@example.com',
-    phone: '05X XXX XXXX',
+    firstName: DEFAULT_FIRST,
+    lastName: DEFAULT_LAST,
+    fullName: DEFAULT_FULL,
+    email: '',
+    phone: '',
     avatar: null,
     verified: true
   },
-  card: {
-    linked: true,
-    last4: '5678',
-    brand: 'VISA'
-  },
+  cards: [],
   bookings: [],
   favorites: [],
   notifications: true
 };
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_STATE };
-    const parsed = JSON.parse(raw);
-    // shallow-merge defaults so new fields don't crash old saves
-    return {
-      ...DEFAULT_STATE,
-      ...parsed,
-      user: { ...DEFAULT_STATE.user, ...(parsed.user || {}) },
-      card: { ...DEFAULT_STATE.card, ...(parsed.card || {}) }
-    };
-  } catch {
-    return { ...DEFAULT_STATE };
-  }
+let state = { ...DEFAULT_STATE, user: { ...DEFAULT_STATE.user }, cards: [] };
+
+function setDefaultState() {
+  state = { ...DEFAULT_STATE, user: { ...DEFAULT_STATE.user }, cards: [] };
 }
 
-function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) {
-    /* silent for prototype */
-  }
+async function hydrateFromServer() {
+  const [profile, wallet, cards, favs, bookings] = await Promise.all([
+    api.loadProfile().catch(() => null),
+    api.loadWallet().catch(() => ({ balance: 0, points: 0 })),
+    api.loadCards().catch(() => []),
+    api.loadFavorites().catch(() => []),
+    api.loadBookings().catch(() => [])
+  ]);
+  state = {
+    authed: true,
+    balance: wallet.balance,
+    points: wallet.points,
+    user: profile ? {
+      firstName: profile.first_name || DEFAULT_FIRST,
+      lastName: profile.last_name  || DEFAULT_LAST,
+      fullName: (profile.first_name || profile.last_name)
+        ? `${profile.first_name || DEFAULT_FIRST} ${profile.last_name || DEFAULT_LAST}`.trim()
+        : DEFAULT_FULL,
+      email: (await api.supabase.auth.getUser()).data.user?.email || '',
+      phone: profile.phone || '',
+      avatar: profile.avatar_url || null,
+      verified: profile.verified !== false
+    } : { ...DEFAULT_STATE.user },
+    cards,
+    bookings,
+    favorites: favs,
+    notifications: true
+  };
 }
 
-function resetState() {
-  localStorage.removeItem(STORAGE_KEY);
-  state = { ...DEFAULT_STATE };
-  refreshAll();
+/* ---------- Card helpers ----------
+   The UI always shows one personal + one family tile even when the user has
+   fewer real cards linked — missing ones render as placeholders with an
+   "activate" CTA. Both cards spend from the same wallet.
+*/
+function findCard(type) {
+  return state.cards.find(c => c.card_type === type) || null;
 }
-
-let state = loadState();
+function primaryCard() {
+  return findCard('personal') || state.cards[0] || null;
+}
 
 /* ---------- Formatters ---------- */
 const arDigits = (n) => new Intl.NumberFormat('ar-SA', { maximumFractionDigits: 2 }).format(n);
@@ -471,8 +716,9 @@ function renderHomeStats() {
   document.querySelectorAll('[data-bind="user-first"]').forEach(el => el.textContent = state.user.firstName);
   document.querySelectorAll('[data-bind="user-full"]').forEach(el => el.textContent = state.user.fullName || `${state.user.firstName} ${state.user.lastName}`);
   document.querySelectorAll('[data-bind="user-email"]').forEach(el => el.textContent = state.user.email);
-  document.querySelectorAll('[data-bind="card-last4"]').forEach(el => el.textContent = `•••• ${state.card.last4}`);
-  document.querySelectorAll('[data-bind="card-last4-suffix"]').forEach(el => el.textContent = state.card.last4);
+  const last4 = primaryCard()?.last4 || '••••';
+  document.querySelectorAll('[data-bind="card-last4"]').forEach(el => el.textContent = `•••• ${last4}`);
+  document.querySelectorAll('[data-bind="card-last4-suffix"]').forEach(el => el.textContent = last4);
   document.querySelectorAll('[data-bind="points-equiv"]').forEach(el => {
     el.textContent = `تعادل ${enDigits(Math.round(state.points / 10))} ر.س`;
   });
@@ -505,12 +751,301 @@ function renderNearbyCategories(container) {
   `).join('');
 }
 
+/* ---------- Packages ---------- */
+function packageCardHTML(pkg) {
+  const style = CATEGORY_STYLE[pkg.coverCategory] || 'teal';
+  const count = pkg.eventIds?.length || 0;
+  const cover = pkg.image
+    ? `<div class="cover cover--photo" style="background-image:url('${pkg.image}');background-position:${pkg.imagePos || 'center'}"></div>`
+    : `<div class="cover ${pkg.coverCategory || 'experience'}">${coverArt(pkg.coverCategory || 'experience')}</div>`;
+  return `
+    <button class="event-card package-card" data-package-id="${pkg.id}" aria-label="${pkg.titleAr}">
+      <div class="event-media">
+        ${cover}
+        <span class="pkg-badge">${count} فعاليات</span>
+        <span class="mult ${style}">${pkg.multiplier} نقاط</span>
+      </div>
+      <div class="event-body">
+        <span class="tag ${style}">باقة${pkg.region ? ' • ' + pkg.region : ''}</span>
+        <h3 class="event-title">${pkg.titleAr}</h3>
+        <div class="event-price">
+          ابتداءً من <b>${enDigits(pkg.price)}</b> <small>ر.س</small>
+        </div>
+      </div>
+    </button>
+  `;
+}
+
+function renderPackages(container) {
+  if (!container) return;
+  if (!PACKAGES.length) {
+    container.innerHTML = `<div class="empty">${ICONS.gift}<div>لا توجد باقات حالياً</div></div>`;
+    return;
+  }
+  container.innerHTML = PACKAGES.map(packageCardHTML).join('');
+  wirePackageTriggers(container);
+}
+
+function wirePackageTriggers(root) {
+  root.querySelectorAll('[data-package-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.packageId);
+      const pkg = PACKAGES.find(x => x.id === id);
+      if (pkg) openPackageSheet(pkg);
+    });
+  });
+}
+
+function openPackageSheet(pkg) {
+  const sheet = document.getElementById('sheet-package');
+  if (!sheet) return;
+
+  const style = CATEGORY_STYLE[pkg.coverCategory] || 'teal';
+  let qty = 1;
+  const total = () => pkg.price * qty;
+
+  const rerender = () => {
+    sheet.querySelector('[data-p="qty"]').textContent = qty;
+    sheet.querySelector('[data-p="total"]').innerHTML = `<b>${enDigits(total())}</b> <small>ر.س</small>`;
+    sheet.querySelector('[data-p="pts-total"]').textContent = `+${enDigits(pkg.points * qty)} نقطة`;
+  };
+
+  const cover = sheet.querySelector('[data-p="cover"]');
+  if (pkg.image) {
+    cover.innerHTML = `<div class="cover cover--photo" style="background-image:url('${pkg.image}');background-position:${pkg.imagePos || 'center'}"></div>`;
+  } else {
+    cover.innerHTML = `<div class="cover ${pkg.coverCategory || 'experience'}">${coverArt(pkg.coverCategory || 'experience')}</div>`;
+  }
+  sheet.querySelector('[data-p="tag"]').textContent = pkg.region ? `باقة • ${pkg.region}` : 'باقة';
+  sheet.querySelector('[data-p="tag"]').className = `tag ${style}`;
+  sheet.querySelector('[data-p="title"]').textContent = pkg.titleAr;
+  sheet.querySelector('[data-p="sub"]').textContent = pkg.titleEn || '';
+  sheet.querySelector('[data-p="desc"]').textContent = pkg.desc || '';
+
+  // Constituent events list
+  const itemsEl = sheet.querySelector('[data-p="items"]');
+  const items = (pkg.eventIds || [])
+    .map(eid => EVENTS.find(e => e.id === eid))
+    .filter(Boolean);
+  if (items.length) {
+    itemsEl.innerHTML = items.map((ev, i) => `
+      <div class="pkg-item">
+        <span class="pkg-step">${i + 1}</span>
+        <div class="pkg-item-body">
+          <div class="pkg-item-title">${ev.titleAr}</div>
+          <div class="pkg-item-meta">${ICONS.mapPin} ${ev.venue} • ${fmtShortDate(ev.date)}</div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    itemsEl.innerHTML = `<div class="empty" style="padding:8px 0">تفاصيل الفعاليات قيد التحميل</div>`;
+  }
+
+  sheet.querySelector('[data-p="price"]').innerHTML = `<b>${enDigits(pkg.price)}</b> <small>ر.س</small>`;
+  sheet.querySelector('[data-p="balance"]').innerHTML = `الرصيد الحالي: <b>${enDigits(Math.floor(state.balance))} ر.س</b>`;
+  qty = 1;
+  rerender();
+
+  const dec = sheet.querySelector('[data-p="dec"]');
+  const inc = sheet.querySelector('[data-p="inc"]');
+  const confirmBtn = sheet.querySelector('[data-p="confirm"]');
+
+  dec.onclick = () => { if (qty > 1) { qty--; rerender(); } };
+  inc.onclick = () => { if (qty < 8) { qty++; rerender(); } };
+  confirmBtn.onclick = async () => {
+    if (!requireAuth('لحجز الباقة، يرجى تسجيل الدخول أولاً')) return;
+    const cost = total();
+    if (state.balance < cost) {
+      toast('الرصيد غير كافٍ لإتمام الحجز', 'error');
+      return;
+    }
+    setBusy(confirmBtn, true);
+    try {
+      const { balance, points, bookingId } = await api.bookPackage(pkg.id, qty);
+      state.balance = balance;
+      state.points = points;
+      state.bookings.unshift({
+        id: bookingId,
+        package_id: pkg.id,
+        event_id: null,
+        quantity: qty,
+        total_paid: cost,
+        points_earned: pkg.points * qty,
+        status: 'confirmed',
+        created_at: new Date().toISOString()
+      });
+      refreshAll();
+      closeSheet(sheet);
+      toast(`تم حجز الباقة • أُضيفت ${enDigits(pkg.points * qty)} نقطة`);
+    } catch (e) {
+      toast(friendlyError(e), 'error');
+    } finally {
+      setBusy(confirmBtn, false);
+    }
+  };
+
+  openSheet(sheet);
+}
+
+/* ---------- Cards page ----------
+   Two hero tiles (personal + family) on top, then a history list of every
+   card the user has ever linked. Full CRUD: add via the sheet, delete each
+   history row. Both tiles spend from the same wallet.
+*/
+function renderCards(container) {
+  if (!container) return;
+  const holderName = state.user.fullName || 'حامل البطاقة';
+  const tiles = [
+    { type: 'personal', label: 'بطاقتي الشخصية', tint: '' },
+    { type: 'family',   label: 'بطاقة العائلة',  tint: 'azwa-card--family' }
+  ];
+
+  const tilesHtml = tiles.map(t => {
+    const card = findCard(t.type);
+    const last4 = card?.last4 || '••••';
+    const linked = !!card?.linked;
+    const displayHolder = linked ? (card?.label || holderName) : 'غير مفعّلة';
+    // Unactivated tiles have no balance/points — the wallet is only reachable
+    // through a linked card. Once activated, both tiles share the same wallet.
+    const shownBalance = linked ? state.balance : 0;
+    const shownPoints  = linked ? state.points  : 0;
+    const pointsLabel  = linked ? 'النقاط المشتركة' : 'النقاط';
+    return `
+      <article class="azwa-card ${t.tint} ${linked ? '' : 'azwa-card--placeholder'}" data-card-tile="${t.type}">
+        <img class="card-art" src="images/azwa-card.png" alt="">
+        <div class="card-overlay">
+          <div class="card-top">
+            <span class="card-badge">${t.type === 'family' ? 'عائلية' : 'شخصية'}</span>
+            <span class="card-label">${t.label}</span>
+          </div>
+          <div class="card-balance">${enDigits(shownBalance)} <small>ر.س</small></div>
+          <div class="card-holder-row">
+            <span class="card-holder">${displayHolder}</span>
+            <span class="card-num-mini">•••• ${last4}</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-points">
+              <span class="k">${pointsLabel}</span>
+              <span class="v">${enDigits(shownPoints)}</span>
+            </div>
+            ${linked
+              ? `<button class="card-recharge" data-open="recharge" type="button">
+                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                   <span>شحن</span>
+                 </button>`
+              : `<button class="card-recharge" data-activate-card="${t.type}" type="button">
+                   <span>تفعيل</span>
+                 </button>`}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // History list: every card ever added, newest first, with delete
+  const history = state.cards.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+  const historyHtml = history.length ? `
+    <div class="section-head mt-16" style="padding:0 4px">
+      <h2 style="font-size:14px">جميع بطاقاتك</h2>
+      <span class="link" style="opacity:.7;cursor:default">${history.length} بطاقة</span>
+    </div>
+    <div class="menu-list mt-8">
+      ${history.map(c => {
+        const holder = c.label || holderName;
+        const kindLabel = c.card_type === 'family' ? 'عائلية' : 'شخصية';
+        const dateStr = c.created_at ? new Date(c.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('ar-SA') : '';
+        return `
+          <div class="menu-row" style="cursor:default;grid-template-columns:40px 1fr auto auto">
+            <span class="ic-wrap">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            </span>
+            <div>
+              <div style="font-weight:700;font-size:14px">${holder}</div>
+              <div style="font-size:12px;color:var(--ink-3)">${c.brand} •••• ${c.last4} • ${kindLabel}${dateStr ? ' • ' + dateStr : ''}</div>
+            </div>
+            <span class="badge" style="background:var(--teal-050);color:var(--teal-ink)">مرتبطة</span>
+            <button data-delete-card="${c.id}" class="icon-btn" aria-label="حذف البطاقة"
+                    style="width:32px;height:32px;background:transparent;color:var(--coral-ink)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 01-2 2H9a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </button>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  ` : '';
+
+  container.innerHTML = tilesHtml + historyHtml;
+
+  // Wire delete buttons on the history list
+  container.querySelectorAll('[data-delete-card]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.deleteCard;
+      if (!confirm('حذف هذه البطاقة؟')) return;
+      setBusy(btn, true);
+      try {
+        await api.deleteCard(id);
+        state.cards = state.cards.filter(c => c.id !== id);
+        renderCards(container);
+        toast('تم حذف البطاقة');
+      } catch (err) {
+        toast(friendlyError(err), 'error');
+      } finally {
+        setBusy(btn, false);
+      }
+    });
+  });
+
+  // Wire per-card actions
+  container.querySelectorAll('[data-activate-card]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!requireAuth('لتفعيل البطاقة، يرجى تسجيل الدخول')) return;
+      const type = btn.dataset.activateCard;
+      const sheet = document.getElementById('sheet-card');
+      if (!sheet) return;
+      sheet.dataset.cardType = type;
+      sheet.dataset.cardLabel = type === 'family' ? 'بطاقة العائلة' : 'بطاقتي الشخصية';
+      // Update the sheet's title so users know what they're linking
+      const title = sheet.querySelector('.sheet-title');
+      if (title) title.textContent = type === 'family' ? 'تفعيل بطاقة العائلة' : 'تفعيل البطاقة الشخصية';
+      openSheet(sheet);
+    });
+  });
+
+  // The [data-open="recharge"] buttons are picked up by wireRecharge on boot.
+  // For cards.html specifically, re-wire them so newly-rendered tiles work.
+  container.querySelectorAll('[data-open="recharge"]').forEach(b => {
+    b.addEventListener('click', () => {
+      if (!requireAuth('لشحن الرصيد، يرجى تسجيل الدخول أولاً')) return;
+      const sheet = document.getElementById('sheet-recharge');
+      if (sheet) openSheet(sheet);
+    });
+  });
+}
+
+/* ---------- Load packages from server, non-blocking ---------- */
+async function loadPackagesFromServer() {
+  try {
+    const rows = await api.loadPackages();
+    if (Array.isArray(rows) && rows.length) {
+      PACKAGES = rows;
+      const pkgEl = document.querySelector('[data-render="packages"]');
+      if (pkgEl) renderPackages(pkgEl);
+    }
+  } catch (e) {
+    console.warn('[packages] fell back to seed:', e?.message || e);
+  }
+}
+
 function renderEventList(container, opts = {}) {
   if (!container) return;
   const cat = opts.category || 'all';
   const q = (opts.query || '').trim();
+  const mult = (opts.multiplier || '').trim();  // e.g. "3X"
   let items = EVENTS.slice();
   if (cat !== 'all') items = items.filter(e => e.category === cat || CATEGORY_LABEL[e.category] === CATEGORIES.find(c => c.key === cat)?.label);
+  if (mult) items = items.filter(e => (e.multiplier || '').toUpperCase() === mult.toUpperCase());
   if (q) {
     const lower = q.toLowerCase();
     items = items.filter(e => (e.titleAr + e.titleEn + e.venue + e.district).toLowerCase().includes(lower));
@@ -700,6 +1235,54 @@ function wireSheetOverlays() {
   });
 }
 
+/* ---------- Helpers: auth-gate (no-op with anon auth), errors, busy state ----------
+   With anonymous auth every browser has a session, so requireAuth() always
+   returns true. It kicks off ensureAnonSession() defensively in case the
+   session was somehow cleared (very rare — the boot flow already does this).
+*/
+function requireAuth(_message) {
+  if (!state.authed) {
+    // Session was cleared out from under us — recover silently.
+    api.ensureAnonSession().catch(() => {});
+  }
+  return true;
+}
+
+function friendlyError(err) {
+  const msg = err?.message || String(err);
+  const map = {
+    'insufficient_balance': 'الرصيد غير كافٍ',
+    'invalid_amount': 'المبلغ غير صحيح',
+    'invalid_quantity': 'الكمية غير صحيحة',
+    'not_authenticated': 'الرجاء تسجيل الدخول',
+    'event_not_found': 'الفعالية غير متاحة',
+    'wallet_missing': 'المحفظة غير مهيّأة'
+  };
+  for (const k of Object.keys(map)) {
+    if (msg.includes(k)) return map[k];
+  }
+  if (msg.includes('Invalid login credentials')) return 'البريد أو كلمة المرور غير صحيحة';
+  if (msg.includes('User already registered')) return 'هذا البريد مسجّل مسبقاً — استخدم "تسجيل الدخول"';
+  if (msg.includes('Password should be at least')) return 'كلمة المرور 6 أحرف على الأقل';
+  if (msg.includes('Email not confirmed')) return 'يرجى تأكيد بريدك أولاً (تحقّق من صندوق الوارد)';
+  if (msg.includes('Token has expired') || msg.includes('otp_expired')) return 'انتهت صلاحية الرمز، أعد المحاولة';
+  if (msg.includes('rate limit') || msg.includes('over_email_send_rate_limit') || msg.includes('429')) return 'تم تجاوز الحد المسموح — جرّب لاحقاً أو استخدم كلمة المرور';
+  if (msg.includes('Unable to validate email') || msg.includes('email_address_invalid')) return 'صيغة البريد غير صحيحة';
+  return msg.length < 80 ? msg : 'حدث خطأ، حاول لاحقاً';
+}
+
+function setBusy(btn, busy) {
+  if (!btn) return;
+  if (busy) {
+    btn.dataset._label = btn.dataset._label ?? btn.textContent;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '';
+  }
+}
+
 /* ---------- Toast ---------- */
 let toastTimer;
 function toast(message, type = 'success') {
@@ -721,10 +1304,14 @@ function wireRecharge() {
   const openBtns = document.querySelectorAll('[data-open="recharge"]');
   const sheet = document.getElementById('sheet-recharge');
   if (!sheet) return;
-  openBtns.forEach(b => b.addEventListener('click', () => openSheet(sheet)));
+  openBtns.forEach(b => b.addEventListener('click', () => {
+    if (!requireAuth('لشحن الرصيد، يرجى تسجيل الدخول أولاً')) return;
+    openSheet(sheet);
+  }));
 
   const amounts = sheet.querySelectorAll('.amount');
   const custom = sheet.querySelector('#recharge-custom');
+  const confirmBtn = sheet.querySelector('[data-confirm="recharge"]');
   let value = 250;
 
   const select = (v) => {
@@ -741,16 +1328,23 @@ function wireRecharge() {
     value = Number(custom.value) || 0;
   });
 
-  sheet.querySelector('[data-confirm="recharge"]').addEventListener('click', () => {
+  confirmBtn.addEventListener('click', async () => {
     if (!value || value < 10) {
       toast('الحد الأدنى للشحن 10 ر.س', 'error');
       return;
     }
-    state.balance += value;
-    saveState();
-    refreshAll();
-    closeSheet(sheet);
-    toast(`تم شحن ${enDigits(value)} ر.س بنجاح`);
+    setBusy(confirmBtn, true);
+    try {
+      const { balance } = await api.rechargeWallet(value);
+      state.balance = balance;
+      refreshAll();
+      closeSheet(sheet);
+      toast(`تم شحن ${enDigits(value)} ر.س بنجاح`);
+    } catch (e) {
+      toast(friendlyError(e), 'error');
+    } finally {
+      setBusy(confirmBtn, false);
+    }
   });
 }
 
@@ -766,15 +1360,26 @@ function wireEventTriggers(root) {
     });
   });
   root.querySelectorAll('.fav').forEach(fav => {
-    fav.addEventListener('click', (e) => {
+    fav.addEventListener('click', async (e) => {
       e.stopPropagation();
+      if (!requireAuth('لحفظ الفعالية، يرجى تسجيل الدخول')) return;
       const card = fav.closest('[data-event-id]');
       const id = Number(card.dataset.eventId);
       const isFav = state.favorites.includes(id);
-      state.favorites = isFav ? state.favorites.filter(x => x !== id) : [...state.favorites, id];
+      // optimistic UI
       fav.classList.toggle('on', !isFav);
       fav.innerHTML = !isFav ? ICONS.heartFill : ICONS.heart;
-      saveState();
+      state.favorites = isFav ? state.favorites.filter(x => x !== id) : [...state.favorites, id];
+      try {
+        if (isFav) await api.removeFavorite(id);
+        else await api.addFavorite(id);
+      } catch (err) {
+        // rollback
+        fav.classList.toggle('on', isFav);
+        fav.innerHTML = isFav ? ICONS.heartFill : ICONS.heart;
+        state.favorites = isFav ? [...state.favorites, id] : state.favorites.filter(x => x !== id);
+        toast(friendlyError(err), 'error');
+      }
     });
     // set initial state
     const card = fav.closest('[data-event-id]');
@@ -822,15 +1427,15 @@ function openEventSheet(ev) {
 
   const dec = sheet.querySelector('[data-e="dec"]');
   const inc = sheet.querySelector('[data-e="inc"]');
-  const confirm = sheet.querySelector('[data-e="confirm"]');
+  const confirmBtn = sheet.querySelector('[data-e="confirm"]');
 
   const decHandler = () => { if (qty > 1) { qty--; rerender(); } };
   const incHandler = () => { if (qty < 8) { qty++; rerender(); } };
-  const confirmHandler = () => {
+  const confirmHandler = async () => {
+    if (!requireAuth('للحجز، يرجى تسجيل الدخول أولاً')) return;
     const cost = total();
     if (state.balance < cost) {
       toast('الرصيد غير كافٍ لإتمام الحجز', 'error');
-      // shake balance row
       const row = sheet.querySelector('[data-e="balance-row"]');
       if (row) {
         row.style.borderColor = 'var(--coral-ink)';
@@ -838,22 +1443,43 @@ function openEventSheet(ev) {
       }
       return;
     }
-    state.balance -= cost;
-    state.points += ev.points * qty;
-    state.bookings.push({ id: Date.now(), eventId: ev.id, qty, when: new Date().toISOString() });
-    saveState();
-    refreshAll();
-    closeSheet(sheet);
-    toast(`تم الحجز بنجاح • أُضيفت ${enDigits(ev.points * qty)} نقطة`);
+    setBusy(confirmBtn, true);
+    try {
+      const { balance, points, bookingId } = await api.bookEvent(ev.id, qty);
+      state.balance = balance;
+      state.points = points;
+      state.bookings.unshift({
+        id: bookingId,
+        event_id: ev.id,
+        quantity: qty,
+        total_paid: cost,
+        points_earned: ev.points * qty,
+        status: 'confirmed',
+        created_at: new Date().toISOString()
+      });
+      refreshAll();
+      closeSheet(sheet);
+      toast(`تم الحجز بنجاح • أُضيفت ${enDigits(ev.points * qty)} نقطة`);
+    } catch (e) {
+      toast(friendlyError(e), 'error');
+    } finally {
+      setBusy(confirmBtn, false);
+    }
   };
 
   // replace listeners cleanly
   dec.onclick = decHandler;
   inc.onclick = incHandler;
-  confirm.onclick = confirmHandler;
+  confirmBtn.onclick = confirmHandler;
 
   openSheet(sheet);
 }
+
+/* ---------- Auth (anonymous-only) ----------
+   No sign-in UI. The boot flow ensures every browser has a Supabase session.
+   The old "logout" button now resets the demo (new anonymous user + fresh wallet).
+*/
+function wireAuth() { /* intentionally empty — kept as a hook for future auth */ }
 
 /* ---------- Generic openers (data-open="support") ----------
    Note: 'recharge', 'link-card', 'profile-edit' are wired in their own
@@ -870,6 +1496,33 @@ function wireGenericOpeners() {
       const sheet = document.getElementById(targetId);
       if (sheet) openSheet(sheet);
     });
+  });
+}
+
+/* ---------- Auth-state driven UI ----------
+   With anonymous auth there's no traditional login/logout. The old "logout"
+   button is repurposed as "reset demo data" — signs out, creates a fresh
+   anonymous user, re-hydrates. Handy for demos.
+*/
+function updateAuthUI() {
+  document.querySelectorAll('[data-auth-label]').forEach(el => {
+    el.textContent = 'إعادة تعيين البيانات';
+  });
+  document.querySelectorAll('[data-auth-action]').forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm('سيتم إنشاء حساب تجريبي جديد وحذف بياناتك الحالية. المتابعة؟')) return;
+      setBusy(btn, true);
+      try {
+        await api.resetToFreshAnon();
+        await hydrateFromServer();
+        refreshAll();
+        toast('تم إعادة تعيين البيانات');
+      } catch (e) {
+        toast(friendlyError(e), 'error');
+      } finally {
+        setBusy(btn, false);
+      }
+    };
   });
 }
 
@@ -918,6 +1571,11 @@ function wireHiddenReset() {
 /* ---------- refresh everything on state change ---------- */
 function refreshAll() {
   renderHomeStats();
+  updateAuthUI();
+  // Cards page shows live balance/points inside the card visuals, so re-render
+  // it whenever state moves (recharge, booking, sign-in, sign-out).
+  const cardsEl = document.querySelector('[data-render="cards"]');
+  if (cardsEl) renderCards(cardsEl);
 }
 
 /* ---------- Inject shared sheets ---------- */
@@ -1010,6 +1668,48 @@ function injectSharedSheets() {
       </div>
     </div>
 
+    <div class="sheet-overlay" id="sheet-package" role="dialog" aria-modal="true" aria-labelledby="pk-title" aria-hidden="true">
+      <div class="sheet">
+        <div class="grip"></div>
+        <div class="detail-cover" data-p="cover"></div>
+        <div class="hstack mt-12" style="justify-content:space-between">
+          <span class="tag" data-p="tag">باقة</span>
+          <button class="icon-btn" data-close aria-label="إغلاق" style="width:32px;height:32px;background:var(--surface-2)">
+            ${ICONS.x}
+          </button>
+        </div>
+        <h3 class="detail-title" id="pk-title" data-p="title">—</h3>
+        <div class="detail-sub" data-p="sub">—</div>
+        <p class="detail-desc" data-p="desc">—</p>
+        <div class="pkg-items-head">تشمل الباقة</div>
+        <div class="pkg-items" data-p="items"></div>
+        <div class="qty-row">
+          <div>
+            <div style="font-size:12px;color:var(--ink-3)">عدد المشتركين</div>
+            <div style="font-weight:700;margin-top:2px" data-p="price">— ر.س</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" data-p="dec" aria-label="تقليل">${ICONS.minus}</button>
+            <span class="qty-num" data-p="qty">1</span>
+            <button class="qty-btn" data-p="inc" aria-label="زيادة">${ICONS.plus}</button>
+          </div>
+        </div>
+        <div class="hstack mt-8" style="justify-content:space-between">
+          <span style="color:var(--ink-3);font-size:13px">المجموع</span>
+          <span style="font-weight:800" data-p="total">— ر.س</span>
+        </div>
+        <div class="hstack" style="justify-content:space-between">
+          <span style="color:var(--ink-3);font-size:13px">تكسب</span>
+          <span style="font-weight:800;color:var(--teal-ink)" data-p="pts-total">+—</span>
+        </div>
+        <div class="balance-row">
+          <span data-p="balance">الرصيد الحالي: <b>—</b></span>
+          <button class="btn btn-outline" style="min-height:36px;padding:0 12px" data-open="recharge">شحن</button>
+        </div>
+        <button class="btn btn-primary btn-block sheet-cta" data-p="confirm">احجز الباقة</button>
+      </div>
+    </div>
+
     <div class="sheet-overlay" id="sheet-support" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="sheet">
         <div class="grip"></div>
@@ -1079,6 +1779,21 @@ function injectSharedSheets() {
       </div>
     </div>
 
+    <!-- Generic list sheet: reused for tickets, favorites, activity, and static "about" content -->
+    <div class="sheet-overlay" id="sheet-list" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="sheet">
+        <div class="grip"></div>
+        <div class="hstack" style="justify-content:space-between;margin-bottom:8px">
+          <h3 class="sheet-title" data-list="title">—</h3>
+          <button class="icon-btn" data-close aria-label="إغلاق" style="width:32px;height:32px;background:var(--surface-2)">
+            ${ICONS.x}
+          </button>
+        </div>
+        <p class="sheet-sub" data-list="sub">—</p>
+        <div data-list="body" class="mt-12"></div>
+      </div>
+    </div>
+
     <div class="sheet-overlay" id="sheet-card" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="sheet">
         <div class="grip"></div>
@@ -1105,6 +1820,74 @@ function injectSharedSheets() {
   Array.from(wrap.children).forEach(c => app.appendChild(c));
 }
 
+/* ---------- Load events from backend, then re-render pages ---------- */
+async function loadEventsFromServer() {
+  try {
+    const rows = await api.loadEvents();
+    if (Array.isArray(rows) && rows.length) {
+      EVENTS = rows;
+      const popular = document.querySelector('[data-render="popular"]');
+      const allEvents = document.querySelector('[data-render="events-list"]');
+      const weekStrip = document.querySelector('[data-render="week-strip"]');
+      const agenda = document.querySelector('[data-agenda]');
+      const cal = document.querySelector('[data-render="calendar"]');
+      if (popular) renderPopular(popular);
+      if (weekStrip) renderEventsWeekStrip(weekStrip);
+      if (cal) renderCalendar(cal);
+      if (agenda) renderAgenda(agenda);
+      if (allEvents) {
+        const q = new URLSearchParams(location.search).get('cat') || 'all';
+        renderEventList(allEvents, { category: q });
+      }
+    }
+  } catch (e) {
+    console.warn('[events] fell back to offline seed:', e?.message || e);
+  }
+}
+
+/* ---------- Auth-state driven hydrate ----------
+   Ensures every browser has an anonymous session, then hydrates state from
+   the backend. First-time visitors get a fresh wallet via the DB trigger.
+*/
+async function bootAuth() {
+  try {
+    await api.ensureAnonSession();
+    await hydrateFromServer();
+    hideAuthErrorBanner();
+  } catch (e) {
+    const msg = e?.message || String(e);
+    console.warn('[bootAuth] failed:', msg);
+    setDefaultState();
+    if (msg.includes('anonymous_provider_disabled') || msg.includes('Anonymous sign-ins are disabled')) {
+      showAuthErrorBanner(
+        'تسجيل الدخول التلقائي غير مُفعّل',
+        'يجب تفعيل Anonymous Sign-Ins في لوحة تحكم Supabase قبل استخدام الشحن/الحجز/تفعيل البطاقات.'
+      );
+    } else {
+      showAuthErrorBanner(
+        'تعذّر الاتصال بالخادم',
+        msg.length > 120 ? 'تحقّق من الاتصال بالإنترنت' : msg
+      );
+    }
+  }
+  refreshAll();
+}
+
+function showAuthErrorBanner(title, subtitle) {
+  let el = document.getElementById('azwa-auth-banner');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'azwa-auth-banner';
+    el.style.cssText = 'position:fixed;top:0;inset-inline:0;z-index:9999;background:#EF5A5A;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.15);max-width:480px;margin:0 auto;line-height:1.4';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<div>${title}</div><div style="font-weight:500;font-size:12px;opacity:0.95;margin-top:2px">${subtitle}</div>`;
+}
+function hideAuthErrorBanner() {
+  const el = document.getElementById('azwa-auth-banner');
+  if (el) el.remove();
+}
+
 /* ---------- Boot ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   injectSharedSheets();
@@ -1113,8 +1896,22 @@ document.addEventListener('DOMContentLoaded', () => {
   wireRecharge();
   wireSupportOptions();
   wireGenericOpeners();
+  wireAuth();
   wireHiddenReset();
   refreshAll();
+
+  // Kick off backend loads (non-blocking so UI paints immediately from seed)
+  loadEventsFromServer();
+  loadPackagesFromServer();
+  bootAuth();
+
+  // Keep state in sync if the anon session changes (token refresh, reset)
+  api.onAuthChange(async (session) => {
+    if (session) {
+      await hydrateFromServer().catch(() => setDefaultState());
+      refreshAll();
+    }
+  });
 
   // Page-specific
   const popular = document.querySelector('[data-render="popular"]');
@@ -1123,25 +1920,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const weekStrip = document.querySelector('[data-render="week-strip"]');
   const cal = document.querySelector('[data-render="calendar"]');
   const agenda = document.querySelector('[data-agenda]');
+  const packagesEl = document.querySelector('[data-render="packages"]');
+  const cardsEl = document.querySelector('[data-render="cards"]');
 
   if (popular) renderPopular(popular);
   if (cats) renderNearbyCategories(cats);
   if (weekStrip) renderEventsWeekStrip(weekStrip);
+  if (packagesEl) renderPackages(packagesEl);
+  if (cardsEl) renderCards(cardsEl);
   if (cal) {
     renderCalendar(cal);
     renderAgenda(agenda);
   }
   if (allEvents) {
-    // Events page: filter chips + search
-    const q = new URLSearchParams(location.search).get('cat');
-    let current = q || 'all';
+    // Events page: chips + search + optional ?mult=NX filter (from home 3X banner)
+    const params = new URLSearchParams(location.search);
+    let current = params.get('cat') || 'all';
+    let mult = params.get('mult') || '';
     let query = '';
+
     const chips = document.querySelectorAll('[data-filter-cat]');
+    const rerender = () => renderEventList(allEvents, { category: current, query, multiplier: mult });
+
     chips.forEach(c => {
       c.addEventListener('click', () => {
         current = c.dataset.filterCat;
         chips.forEach(x => x.classList.toggle('is-active', x === c));
-        renderEventList(allEvents, { category: current, query });
+        rerender();
       });
       if (c.dataset.filterCat === current) c.classList.add('is-active');
     });
@@ -1149,10 +1954,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         query = e.target.value;
-        renderEventList(allEvents, { category: current, query });
+        rerender();
       });
     }
-    renderEventList(allEvents, { category: current });
+
+    // If a multiplier filter is active, show a dismissable banner above the list
+    if (mult) {
+      const banner = document.createElement('div');
+      banner.className = 'filter-banner';
+      banner.innerHTML = `
+        <span class="lbl">تمّت التصفية إلى فعاليات ${mult} نقاط فقط</span>
+        <button class="clear" aria-label="إزالة التصفية">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>`;
+      allEvents.parentElement?.insertBefore(banner, allEvents);
+      banner.querySelector('.clear').addEventListener('click', () => {
+        mult = '';
+        banner.remove();
+        // clean the query string
+        const url = new URL(location.href);
+        url.searchParams.delete('mult');
+        history.replaceState({}, '', url);
+        rerender();
+      });
+    }
+
+    rerender();
   }
 
   // Map venues + Google Maps iframe wiring
@@ -1184,6 +2011,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Profile page bindings
   wireProfileEdits();
   wireCardLink();
+  wireMoreButtons();
   wireToggles();
 });
 
@@ -1219,7 +2047,8 @@ function wireProfileEdits() {
     reader.readAsDataURL(file);
   });
 
-  sheet.querySelector('[data-confirm="profile"]').addEventListener('click', () => {
+  const saveBtn = sheet.querySelector('[data-confirm="profile"]');
+  saveBtn.addEventListener('click', async () => {
     const first = sheet.querySelector('#pf-first').value.trim();
     const last = sheet.querySelector('#pf-last').value.trim();
     const email = sheet.querySelector('#pf-email').value.trim();
@@ -1228,45 +2057,211 @@ function wireProfileEdits() {
       toast('يرجى تعبئة الحقول المطلوبة', 'error');
       return;
     }
-    state.user.firstName = first;
-    state.user.lastName = last;
-    state.user.fullName = `${first} ${last}`;
-    state.user.email = email;
-    state.user.phone = phone;
-    if (sheet._tempAvatar) state.user.avatar = sheet._tempAvatar;
-    saveState();
-    refreshAll();
-    // update visible avatar
-    const av = document.querySelector('[data-avatar]');
-    if (av) {
-      if (state.user.avatar) av.innerHTML = `<img alt="" src="${state.user.avatar}">`;
-      else av.textContent = first.charAt(0);
+    setBusy(saveBtn, true);
+    try {
+      await api.updateProfile({
+        first_name: first,
+        last_name: last,
+        phone,
+        avatar_url: sheet._tempAvatar || state.user.avatar || null
+      });
+      state.user.firstName = first;
+      state.user.lastName = last;
+      state.user.fullName = `${first} ${last}`;
+      state.user.email = email; // (email change via auth not implemented for prototype)
+      state.user.phone = phone;
+      if (sheet._tempAvatar) state.user.avatar = sheet._tempAvatar;
+      refreshAll();
+      const av = document.querySelector('[data-avatar]');
+      if (av) {
+        if (state.user.avatar) av.innerHTML = `<img alt="" src="${state.user.avatar}">`;
+        else av.textContent = first.charAt(0);
+      }
+      closeSheet(sheet);
+      toast('تم حفظ بياناتك');
+    } catch (e) {
+      toast(friendlyError(e), 'error');
+    } finally {
+      setBusy(saveBtn, false);
     }
-    closeSheet(sheet);
-    toast('تم حفظ بياناتك');
   });
 }
 
 function wireCardLink() {
-  const openBtn = document.querySelector('[data-open="link-card"]');
   const sheet = document.getElementById('sheet-card');
-  if (!openBtn || !sheet) return;
+  if (!sheet) return;
 
-  openBtn.addEventListener('click', () => openSheet(sheet));
+  const nameInput = sheet.querySelector('#c-name');
 
-  sheet.querySelector('[data-confirm="card"]').addEventListener('click', () => {
-    const name = sheet.querySelector('#c-name').value.trim();
+  // Multiple entry points on the page ("wallet" button, "payment methods" row, etc.)
+  // Auto-fill the holder name from the profile every time we open, and reset
+  // the sheet title if a per-card activation flow hasn't set a custom one.
+  document.querySelectorAll('[data-open="link-card"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (nameInput) nameInput.value = state.user.fullName || '';
+      if (!sheet.dataset.cardType) {
+        const title = sheet.querySelector('.sheet-title');
+        if (title) title.textContent = 'ربط بطاقة جديدة';
+      }
+      openSheet(sheet);
+    });
+  });
+
+  const saveBtn = sheet.querySelector('[data-confirm="card"]');
+  saveBtn.addEventListener('click', async () => {
+    const name = nameInput.value.trim();
     const last4 = sheet.querySelector('#c-last4').value.trim();
     if (!name || !/^\d{4}$/.test(last4)) {
       toast('يرجى إدخال بيانات صحيحة', 'error');
       return;
     }
-    state.card = { ...state.card, linked: true, last4 };
-    saveState();
-    refreshAll();
-    closeSheet(sheet);
-    toast('تمت إضافة البطاقة');
+    setBusy(saveBtn, true);
+    try {
+      const type = sheet.dataset.cardType || 'personal';
+      // The label stores the holder name (used for display in the card history).
+      const newCard = await api.linkCard({ brand: 'VISA', last4, card_type: type, label: name });
+      // Append (keep history — user can now see all cards they've linked).
+      state.cards = [...state.cards, newCard];
+      // Reset sheet for next open
+      delete sheet.dataset.cardType;
+      delete sheet.dataset.cardLabel;
+      sheet.querySelector('#c-last4').value = '';
+      refreshAll();
+      const cardsEl = document.querySelector('[data-render="cards"]');
+      if (cardsEl) renderCards(cardsEl);
+      closeSheet(sheet);
+      toast('تمت إضافة البطاقة');
+    } catch (e) {
+      toast(friendlyError(e), 'error');
+    } finally {
+      setBusy(saveBtn, false);
+    }
   });
+}
+
+/* ---------- More-page buttons: tickets, favorites, activity, and stubs ----------
+   Anything that can be shown from data we already have (bookings, favorites,
+   transactions) opens the shared list sheet. Static-content rows (privacy,
+   terms, about, addresses, invite, offers, ratings) open the same sheet with
+   a friendly placeholder — they're not real product features yet, but tapping
+   them does something instead of being dead.
+*/
+function wireMoreButtons() {
+  document.querySelectorAll('[data-more]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const kind = btn.dataset.more;
+      try {
+        switch (kind) {
+          case 'tickets':      await showTicketsSheet(); break;
+          case 'favorites':    await showFavoritesSheet(); break;
+          case 'activity':     await showActivitySheet(); break;
+          case 'ratings':      showStaticListSheet('التقييمات', 'شارك رأيك في الفعاليات التي حجزتها.', 'لم تُقيّم أي فعالية بعد. بعد أول حجز، ستظهر هنا خيار تقييم التجربة.'); break;
+          case 'offers':       showStaticListSheet('عروضي وكوبوناتي', 'الكوبونات المتاحة لك حالياً.', 'لا توجد كوبونات نشطة حالياً. تابع صفحة "الأكثر رواجاً" للحصول على عروض 3X.'); break;
+          case 'invite':       await handleInvite(); break;
+          case 'addresses':    showStaticListSheet('عناويني', 'العناوين المحفوظة للاستلام والتوصيل.', 'لم تضِف أي عنوان بعد.'); break;
+          case 'about':        showStaticListSheet('عن عزوة', 'منصّة عزوة للترفيه والمكافآت.', 'عزوة هي تطبيق تجريبي للترفيه في المملكة، يجمع الحجز والمكافآت في مكان واحد. النسخة الحالية عرض تجريبي — البيانات محلية.'); break;
+          case 'language':     showStaticListSheet('اللغة', null, 'اللغة العربية هي اللغة الوحيدة المدعومة حالياً في النسخة التجريبية.'); break;
+          case 'privacy':      showStaticListSheet('سياسة الخصوصية', null, 'هذا التطبيق تجريبي. لا تُخزَّن أي بيانات دفع حقيقية. جميع البيانات محفوظة في الخادم الخاص بالنموذج الأولي فقط.'); break;
+          case 'terms':        showStaticListSheet('الشروط والأحكام', null, 'باستخدام هذا التطبيق التجريبي، فأنت توافق على أنه للعرض فقط ولا يُنفذ عمليات مالية حقيقية.'); break;
+          default: toast('قريباً');
+        }
+      } catch (e) {
+        toast(friendlyError(e), 'error');
+      }
+    });
+  });
+}
+
+async function showTicketsSheet() {
+  const bookings = await api.loadBookings();
+  const body = bookings.length
+    ? bookings.map(b => {
+        const title = b.event_title || b.package_title || 'حجز';
+        const when = b.created_at ? new Date(b.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('ar-SA') : '';
+        const kind = b.package_id ? 'باقة' : 'فعالية';
+        return `
+          <div class="menu-row" style="cursor:default">
+            <span class="ic-wrap" style="background:var(--teal-050);color:var(--teal-ink)">${ICONS.ticket}</span>
+            <div>
+              <div style="font-weight:700;font-size:14px">${title}</div>
+              <div style="font-size:12px;color:var(--ink-3)">${kind} • ${b.quantity} × • ${when}</div>
+            </div>
+            <span style="font-weight:800;font-size:13px">${enDigits(b.total_paid)} <small>ر.س</small></span>
+            <span class="badge">+${enDigits(b.points_earned)} نقطة</span>
+          </div>`;
+      }).join('')
+    : `<div class="empty" style="padding:24px 0">${ICONS.ticket}<div>لا توجد تذاكر بعد</div><div style="font-size:12px;color:var(--ink-4);margin-top:4px">اذهب إلى صفحة الفعاليات وابدأ الحجز.</div></div>`;
+  openListSheet('تذاكري', `${bookings.length} تذكرة`, `<div class="menu-list">${body}</div>`);
+}
+
+async function showFavoritesSheet() {
+  const ids = state.favorites;
+  const favs = EVENTS.filter(e => ids.includes(e.id));
+  const body = favs.length
+    ? favs.map(agendaRowHTML).join('')
+    : `<div class="empty" style="padding:24px 0">${ICONS.heart}<div>لا توجد فعاليات محفوظة</div><div style="font-size:12px;color:var(--ink-4);margin-top:4px">اضغط على القلب في أي فعالية لحفظها هنا.</div></div>`;
+  openListSheet('المفضلة', `${favs.length} فعالية محفوظة`, favs.length ? `<div class="event-list">${body}</div>` : body);
+  // Wire the event triggers so tapping a fav opens its detail sheet.
+  const list = document.querySelector('[data-list="body"] .event-list');
+  if (list) wireEventTriggers(list);
+}
+
+async function showActivitySheet() {
+  const txns = await api.loadTransactions();
+  if (!txns.length) {
+    openListSheet('سجل النشاط', '—', `<div class="empty" style="padding:24px 0">${ICONS.history}<div>لا توجد معاملات بعد</div></div>`);
+    return;
+  }
+  const rows = txns.map(t => {
+    const when = t.created_at ? new Date(t.created_at.replace(' ', 'T') + 'Z').toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+    const kindLabel = { recharge: 'شحن رصيد', booking: 'حجز', refund: 'استرداد', points_credit: 'إضافة نقاط', points_redeem: 'استبدال نقاط' }[t.kind] || t.kind;
+    const isCredit = t.kind === 'recharge' || t.kind === 'points_credit';
+    const amountStr = `${isCredit ? '+' : '−'}${enDigits(t.amount)} ر.س`;
+    const color = isCredit ? 'var(--teal-ink)' : 'var(--coral-ink)';
+    const pts = t.points_delta ? `<span class="badge" style="background:var(--teal-050);color:var(--teal-ink)">+${enDigits(t.points_delta)} نقطة</span>` : '';
+    return `
+      <div class="menu-row" style="cursor:default">
+        <span class="ic-wrap">${isCredit ? ICONS.wallet : ICONS.ticket}</span>
+        <div>
+          <div style="font-weight:700;font-size:14px">${kindLabel}</div>
+          <div style="font-size:12px;color:var(--ink-3)">${when}</div>
+        </div>
+        <span style="font-weight:800;font-size:13px;color:${color}">${amountStr}</span>
+        ${pts}
+      </div>`;
+  }).join('');
+  openListSheet('سجل النشاط', `${txns.length} عملية`, `<div class="menu-list">${rows}</div>`);
+}
+
+function showStaticListSheet(title, sub, bodyText) {
+  openListSheet(title, sub, `<div style="padding:12px 4px;line-height:1.7;color:var(--ink-2);font-size:14px">${bodyText}</div>`);
+}
+
+async function handleInvite() {
+  const link = location.origin + '/index.html';
+  const msg = `تعرف على تطبيق عزوة للترفيه والمكافآت! ${link}`;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'عزوة', text: msg, url: link }); return; }
+    catch { /* user cancelled */ }
+  }
+  try {
+    await navigator.clipboard.writeText(link);
+    toast('تم نسخ الرابط للحافظة');
+  } catch {
+    showStaticListSheet('دعوة الأصدقاء', 'شارك هذا الرابط مع أصدقائك.', link);
+  }
+}
+
+function openListSheet(title, sub, bodyHtml) {
+  const sheet = document.getElementById('sheet-list');
+  if (!sheet) return;
+  sheet.querySelector('[data-list="title"]').textContent = title;
+  const subEl = sheet.querySelector('[data-list="sub"]');
+  if (sub) { subEl.textContent = sub; subEl.style.display = ''; }
+  else     { subEl.style.display = 'none'; }
+  sheet.querySelector('[data-list="body"]').innerHTML = bodyHtml;
+  openSheet(sheet);
 }
 
 function wireToggles() {
@@ -1275,10 +2270,7 @@ function wireToggles() {
       const on = t.getAttribute('aria-checked') === 'true';
       t.setAttribute('aria-checked', String(!on));
       const key = t.dataset.toggle;
-      if (key === 'notifications') {
-        state.notifications = !on;
-        saveState();
-      }
+      if (key === 'notifications') state.notifications = !on;
     });
     if (t.dataset.toggle === 'notifications') {
       t.setAttribute('aria-checked', String(!!state.notifications));

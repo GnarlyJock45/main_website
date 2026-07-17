@@ -1,0 +1,56 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic "عزوة" [ref=f3e4]:
+      - img "عزوة AZWA" [ref=f3e5]
+    - generic [ref=f3e6]:
+      - button "الإشعارات" [ref=f3e7] [cursor=pointer]
+      - button "الإعدادات" [ref=f3e11] [cursor=pointer]
+  - main [ref=f3e15]:
+    - generic [ref=f3e16]:
+      - generic [ref=f3e17]: أ
+      - generic [ref=f3e18]:
+        - generic [ref=f3e19]: زائر
+        - generic [ref=f3e20]: عضو موثّق
+    - generic [ref=f3e23]:
+      - button "محفظتي" [ref=f3e24] [cursor=pointer]
+      - generic [ref=f3e27]:
+        - generic [ref=f3e28]: رصيد عزوة
+        - generic [ref=f3e29]: 0 نقطة
+        - generic [ref=f3e31]: تعادل 348 ر.س
+    - generic [ref=f3e32]:
+      - button "تذاكري" [ref=f3e33] [cursor=pointer]
+      - button "المفضلة" [ref=f3e38] [cursor=pointer]
+      - button "سجل النشاط" [ref=f3e43] [cursor=pointer]
+      - button "التقييمات" [ref=f3e49] [cursor=pointer]
+    - generic [ref=f3e54]:
+      - button "عروضي وكوبوناتي" [ref=f3e55] [cursor=pointer]
+      - button "دعوة الأصدقاء اكسب نقاط" [ref=f3e64] [cursor=pointer]:
+        - generic [ref=f3e70]: دعوة الأصدقاء
+        - generic [ref=f3e71]: اكسب نقاط
+      - button "عناويني" [ref=f3e75] [cursor=pointer]
+      - button "طرق الدفع •••• 5678" [ref=f3e84] [cursor=pointer]:
+        - generic [ref=f3e88]: طرق الدفع
+        - generic [ref=f3e89]: •••• 5678
+      - button "المساعدة والدعم" [ref=f3e93] [cursor=pointer]
+      - button "عن عزوة" [ref=f3e102] [cursor=pointer]
+    - generic [ref=f3e111]:
+      - generic [ref=f3e112]:
+        - generic [ref=f3e117]: الإشعارات
+        - switch "تفعيل الإشعارات" [checked] [ref=f3e118]
+      - button "اللغة العربية" [ref=f3e119] [cursor=pointer]:
+        - generic [ref=f3e124]: اللغة
+        - generic [ref=f3e125]: العربية
+      - button "سياسة الخصوصية" [ref=f3e129] [cursor=pointer]
+      - button "الشروط والأحكام" [ref=f3e137] [cursor=pointer]
+    - button "تسجيل خروج" [ref=f3e146] [cursor=pointer]
+  - navigation "التنقل" [ref=f3e150]:
+    - link "الرئيسية" [ref=f3e151] [cursor=pointer]:
+      - /url: index.html
+    - link "التقويم" [ref=f3e156] [cursor=pointer]:
+      - /url: calendar.html
+    - link "الخريطة" [ref=f3e162] [cursor=pointer]:
+      - /url: map.html
+    - link "الفعاليات" [ref=f3e168] [cursor=pointer]:
+      - /url: events.html
+    - link "المزيد" [ref=f3e173] [cursor=pointer]:
+      - /url: more.html

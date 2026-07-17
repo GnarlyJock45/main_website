@@ -1,0 +1,7 @@
+[     884ms] TypeError: Cannot read properties of null (reading 'last4')
+    at http://localhost:5555/js/app.js:478:107
+    at NodeList.forEach (<anonymous>)
+    at renderHomeStats (http://localhost:5555/js/app.js:478:57)
+    at refreshAll (http://localhost:5555/js/app.js:1134:3)
+    at HTMLDocument.<anonymous> (http://localhost:5555/js/app.js:1408:3)
+[     890ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5555/more.html:0

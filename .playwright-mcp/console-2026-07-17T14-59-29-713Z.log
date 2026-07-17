@@ -1,0 +1,21 @@
+[     923ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5555/more.html:0
+[     969ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:5555/favicon.ico:0
+[   27113ms] [LOG] [signin] click @ http://localhost:5555/js/app.js:971
+[   27114ms] [LOG] [signin] setBusy true @ http://localhost:5555/js/app.js:976
+[   27114ms] [LOG] [signin] calling signInWithPassword @ http://localhost:5555/js/app.js:979
+[   49232ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://wtaveucbqvppddckihqy.supabase.co/auth/v1/token?grant_type=password:0
+[   49232ms] [ERROR] TypeError: Failed to fetch
+    at https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:1163
+    at Ne (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:7405)
+    at d (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:7210)
+    at p.signInWithPassword (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:19926)
+    at Module.signInWithPassword (http://localhost:5555/js/api.js:45:47)
+    at HTMLButtonElement.<anonymous> (http://localhost:5555/js/app.js:981:27) @ https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:1
+[   49240ms] [LOG] [signin] ERROR Failed to fetch AuthRetryableFetchError: Failed to fetch
+    at Ne (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:7462)
+    at async d (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:7204)
+    at async p.signInWithPassword (https://esm.sh/@supabase/auth-js@2.65.0/es2022/auth-js.mjs:2:19920)
+    at async Module.signInWithPassword (http://localhost:5555/js/api.js:45:27)
+    at async HTMLButtonElement.<anonymous> (http://localhost:5555/js/app.js:981:17) @ http://localhost:5555/js/app.js:985
+[   49245ms] [LOG] [signin] finally, setBusy false @ http://localhost:5555/js/app.js:988
+[   49247ms] [LOG] [signin] btn disabled= false opacity=  @ http://localhost:5555/js/app.js:990
