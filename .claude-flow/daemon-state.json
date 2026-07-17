@@ -9,37 +9,37 @@
       "averageDurationMs": 3.2903225806451615,
       "lastRun": "2026-07-17T20:10:34.986Z",
       "lastStartedAt": "2026-07-17T20:10:34.983Z",
-      "nextRun": "2026-07-17T20:10:34.972Z",
+      "nextRun": "2026-07-17T20:25:34.987Z",
       "isRunning": false
     },
     "audit": {
-      "runCount": 43,
-      "successCount": 43,
+      "runCount": 45,
+      "successCount": 45,
       "failureCount": 0,
-      "averageDurationMs": 4.093023255813953,
-      "lastRun": "2026-07-17T20:02:35.105Z",
-      "lastStartedAt": "2026-07-17T20:02:35.102Z",
-      "nextRun": "2026-07-17T20:12:35.106Z",
+      "averageDurationMs": 4.022222222222221,
+      "lastRun": "2026-07-17T20:22:35.132Z",
+      "lastStartedAt": "2026-07-17T20:22:35.130Z",
+      "nextRun": "2026-07-17T20:22:35.117Z",
       "isRunning": false
     },
     "optimize": {
-      "runCount": 29,
-      "successCount": 29,
+      "runCount": 30,
+      "successCount": 30,
       "failureCount": 0,
-      "averageDurationMs": 6.103448275862069,
-      "lastRun": "2026-07-17T19:59:34.990Z",
-      "lastStartedAt": "2026-07-17T19:59:34.988Z",
-      "nextRun": "2026-07-17T20:14:34.991Z",
+      "averageDurationMs": 5.966666666666667,
+      "lastRun": "2026-07-17T20:14:34.995Z",
+      "lastStartedAt": "2026-07-17T20:14:34.993Z",
+      "nextRun": "2026-07-17T20:29:34.996Z",
       "isRunning": false
     },
     "consolidate": {
-      "runCount": 15,
-      "successCount": 15,
+      "runCount": 16,
+      "successCount": 16,
       "failureCount": 0,
-      "averageDurationMs": 7.799999999999999,
-      "lastRun": "2026-07-17T19:46:34.794Z",
-      "lastStartedAt": "2026-07-17T19:46:34.792Z",
-      "nextRun": "2026-07-17T20:16:34.795Z",
+      "averageDurationMs": 7.687499999999999,
+      "lastRun": "2026-07-17T20:16:34.812Z",
+      "lastStartedAt": "2026-07-17T20:16:34.806Z",
+      "nextRun": "2026-07-17T20:46:34.813Z",
       "isRunning": false
     },
     "testgaps": {
@@ -175,5 +175,5 @@
       }
     ]
   },
-  "savedAt": "2026-07-17T20:10:34.986Z"
+  "savedAt": "2026-07-17T20:22:35.132Z"
 }

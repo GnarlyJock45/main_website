@@ -269,10 +269,11 @@ export async function rechargeWallet(amount) {
   return { balance: Number(new_balance) };
 }
 
-export async function bookEvent(eventId, quantity) {
+// paymentMethod: 'balance' (default) or 'points'
+export async function bookEvent(eventId, quantity, paymentMethod = 'balance') {
   const r = await request('/api/rpc/book_event', {
     method: 'POST',
-    body: { event_id: eventId, quantity },
+    body: { event_id: eventId, quantity, payment_method: paymentMethod },
   });
   return {
     bookingId: r.booking_id,
@@ -281,10 +282,10 @@ export async function bookEvent(eventId, quantity) {
   };
 }
 
-export async function bookPackage(packageId, quantity) {
+export async function bookPackage(packageId, quantity, paymentMethod = 'balance') {
   const r = await request('/api/rpc/book_package', {
     method: 'POST',
-    body: { package_id: packageId, quantity },
+    body: { package_id: packageId, quantity, payment_method: paymentMethod },
   });
   return {
     bookingId: r.booking_id,

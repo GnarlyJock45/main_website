@@ -802,28 +802,58 @@ function openPackageSheet(pkg) {
 
   const style = CATEGORY_STYLE[pkg.coverCategory] || 'teal';
   let qty = 1;
-  const total = () => pkg.price * qty;
+  let method = 'balance';
+
+  const totalSAR    = () => pkg.price * qty;
+  const totalPoints = () => Math.round(totalSAR() * POINTS_PER_SAR);
+  const earned      = () => pkg.points * qty;
+
+  const $ = (sel) => sheet.querySelector(sel);
 
   const rerender = () => {
-    sheet.querySelector('[data-p="qty"]').textContent = qty;
-    sheet.querySelector('[data-p="total"]').innerHTML = `<b>${enDigits(total())}</b> <small>ر.س</small>`;
-    sheet.querySelector('[data-p="pts-total"]').textContent = `+${enDigits(pkg.points * qty)} نقطة`;
+    $('[data-p="qty"]').textContent = qty;
+    if (method === 'balance') {
+      $('[data-p="total"]').innerHTML = `<b>${enDigits(totalSAR())}</b> <small>ر.س</small>`;
+    } else {
+      $('[data-p="total"]').innerHTML = `<b>${enDigits(totalPoints())}</b> <small>نقطة</small>`;
+    }
+    const earnRow = $('[data-p="earn-row"]');
+    if (method === 'balance') {
+      earnRow.style.display = '';
+      $('[data-p="pts-total"]').textContent = `+${enDigits(earned())} نقطة`;
+    } else {
+      earnRow.style.display = 'none';
+    }
+    const bal = $('[data-p="balance"]');
+    const topUp = $('[data-p="topup-btn"]');
+    if (method === 'balance') {
+      bal.innerHTML = `الرصيد الحالي: <b>${enDigits(Math.floor(state.balance))} ر.س</b>`;
+      topUp.style.display = '';
+    } else {
+      bal.innerHTML = `النقاط المتاحة: <b>${enDigits(state.points)} نقطة</b>`;
+      topUp.style.display = 'none';
+    }
+    $('[data-p="confirm"]').textContent = method === 'balance' ? 'احجز الباقة' : `احجز بـ ${enDigits(totalPoints())} نقطة`;
+    $('[data-p="pay-balance"]').classList.toggle('is-active', method === 'balance');
+    $('[data-p="pay-points"]').classList.toggle('is-active', method === 'points');
+    $('[data-p="pay-balance"]').setAttribute('aria-selected', String(method === 'balance'));
+    $('[data-p="pay-points"]').setAttribute('aria-selected', String(method === 'points'));
   };
 
-  const cover = sheet.querySelector('[data-p="cover"]');
+  const cover = $('[data-p="cover"]');
   if (pkg.image) {
     cover.innerHTML = `<div class="cover cover--photo" style="background-image:url('${pkg.image}');background-position:${pkg.imagePos || 'center'}"></div>`;
   } else {
     cover.innerHTML = `<div class="cover ${pkg.coverCategory || 'experience'}">${coverArt(pkg.coverCategory || 'experience')}</div>`;
   }
-  sheet.querySelector('[data-p="tag"]').textContent = pkg.region ? `باقة • ${pkg.region}` : 'باقة';
-  sheet.querySelector('[data-p="tag"]').className = `tag ${style}`;
-  sheet.querySelector('[data-p="title"]').textContent = pkg.titleAr;
-  sheet.querySelector('[data-p="sub"]').textContent = pkg.titleEn || '';
-  sheet.querySelector('[data-p="desc"]').textContent = pkg.desc || '';
+  $('[data-p="tag"]').textContent = pkg.region ? `باقة • ${pkg.region}` : 'باقة';
+  $('[data-p="tag"]').className = `tag ${style}`;
+  $('[data-p="title"]').textContent = pkg.titleAr;
+  $('[data-p="sub"]').textContent = pkg.titleEn || '';
+  $('[data-p="desc"]').textContent = pkg.desc || '';
 
   // Constituent events list
-  const itemsEl = sheet.querySelector('[data-p="items"]');
+  const itemsEl = $('[data-p="items"]');
   const items = (pkg.eventIds || [])
     .map(eid => EVENTS.find(e => e.id === eid))
     .filter(Boolean);
@@ -841,27 +871,27 @@ function openPackageSheet(pkg) {
     itemsEl.innerHTML = `<div class="empty" style="padding:8px 0">تفاصيل الفعاليات قيد التحميل</div>`;
   }
 
-  sheet.querySelector('[data-p="price"]').innerHTML = `<b>${enDigits(pkg.price)}</b> <small>ر.س</small>`;
-  sheet.querySelector('[data-p="balance"]').innerHTML = `الرصيد الحالي: <b>${enDigits(Math.floor(state.balance))} ر.س</b>`;
+  $('[data-p="price"]').innerHTML = `<b>${enDigits(pkg.price)}</b> <small>ر.س</small>`;
   qty = 1;
+  method = 'balance';
   rerender();
 
-  const dec = sheet.querySelector('[data-p="dec"]');
-  const inc = sheet.querySelector('[data-p="inc"]');
-  const confirmBtn = sheet.querySelector('[data-p="confirm"]');
+  const dec = $('[data-p="dec"]');
+  const inc = $('[data-p="inc"]');
+  const confirmBtn = $('[data-p="confirm"]');
 
   dec.onclick = () => { if (qty > 1) { qty--; rerender(); } };
   inc.onclick = () => { if (qty < 8) { qty++; rerender(); } };
+  $('[data-p="pay-balance"]').onclick = () => { method = 'balance'; rerender(); };
+  $('[data-p="pay-points"]').onclick  = () => { method = 'points';  rerender(); };
+
   confirmBtn.onclick = async () => {
     if (!requireAuth('لحجز الباقة، يرجى تسجيل الدخول أولاً')) return;
-    const cost = total();
-    if (state.balance < cost) {
-      toast('الرصيد غير كافٍ لإتمام الحجز', 'error');
-      return;
-    }
+    if (method === 'balance' && state.balance < totalSAR()) { toast('الرصيد غير كافٍ لإتمام الحجز', 'error'); return; }
+    if (method === 'points'  && state.points  < totalPoints()) { toast('نقاطك غير كافية لإتمام الحجز', 'error'); return; }
     setBusy(confirmBtn, true);
     try {
-      const { balance, points, bookingId } = await api.bookPackage(pkg.id, qty);
+      const { balance, points, bookingId } = await api.bookPackage(pkg.id, qty, method);
       state.balance = balance;
       state.points = points;
       state.bookings.unshift({
@@ -869,14 +899,16 @@ function openPackageSheet(pkg) {
         package_id: pkg.id,
         event_id: null,
         quantity: qty,
-        total_paid: cost,
-        points_earned: pkg.points * qty,
+        total_paid: method === 'balance' ? totalSAR() : 0,
+        points_earned: method === 'balance' ? earned() : 0,
         status: 'confirmed',
         created_at: new Date().toISOString()
       });
       refreshAll();
       closeSheet(sheet);
-      toast(`تم حجز الباقة • أُضيفت ${enDigits(pkg.points * qty)} نقطة`);
+      toast(method === 'balance'
+        ? `تم حجز الباقة • أُضيفت ${enDigits(earned())} نقطة`
+        : `تم حجز الباقة بالنقاط • ${enDigits(totalPoints())} نقطة`);
     } catch (e) {
       toast(friendlyError(e), 'error');
     } finally {
@@ -1390,87 +1422,133 @@ function wireEventTriggers(root) {
   });
 }
 
+// 1 SAR = 10 points (kept in sync with the backend POINTS_PER_SAR).
+const POINTS_PER_SAR = 10;
+
 function openEventSheet(ev) {
   const sheet = document.getElementById('sheet-event');
   if (!sheet) return;
 
   const style = CATEGORY_STYLE[ev.category] || 'teal';
   let qty = 1;
-  const total = () => ev.price * qty;
+  let method = 'balance';  // 'balance' or 'points'
+
+  const totalSAR    = () => ev.price * qty;
+  const totalPoints = () => Math.round(totalSAR() * POINTS_PER_SAR);
+  const earned      = () => ev.points * qty;
+
+  const $ = (sel) => sheet.querySelector(sel);
 
   const rerender = () => {
-    sheet.querySelector('[data-e="qty"]').textContent = qty;
-    sheet.querySelector('[data-e="total"]').innerHTML = `<b>${enDigits(total())}</b> <small>ر.س</small>`;
-    sheet.querySelector('[data-e="pts-total"]').textContent = `+${enDigits(ev.points * qty)} نقطة`;
+    $('[data-e="qty"]').textContent = qty;
+
+    // Total switches units based on selected payment method
+    if (method === 'balance') {
+      $('[data-e="total"]').innerHTML = `<b>${enDigits(totalSAR())}</b> <small>ر.س</small>`;
+    } else {
+      $('[data-e="total"]').innerHTML = `<b>${enDigits(totalPoints())}</b> <small>نقطة</small>`;
+    }
+
+    // Earning points only happens when paying with SAR
+    const earnRow = $('[data-e="earn-row"]');
+    if (method === 'balance') {
+      earnRow.style.display = '';
+      $('[data-e="pts-total"]').textContent = `+${enDigits(earned())} نقطة`;
+    } else {
+      earnRow.style.display = 'none';
+    }
+
+    // Balance row shows the relevant wallet + hides شحن when paying with points
+    const bal = $('[data-e="balance"]');
+    const topUp = $('[data-e="topup-btn"]');
+    if (method === 'balance') {
+      bal.innerHTML = `الرصيد الحالي: <b>${enDigits(Math.floor(state.balance))} ر.س</b>`;
+      topUp.style.display = '';
+    } else {
+      bal.innerHTML = `النقاط المتاحة: <b>${enDigits(state.points)} نقطة</b>`;
+      topUp.style.display = 'none';
+    }
+
+    // CTA label reflects the method
+    $('[data-e="confirm"]').textContent = method === 'balance' ? 'احجز الآن' : `احجز بـ ${enDigits(totalPoints())} نقطة`;
+
+    // Active tab styling
+    $('[data-e="pay-balance"]').classList.toggle('is-active', method === 'balance');
+    $('[data-e="pay-points"]').classList.toggle('is-active', method === 'points');
+    $('[data-e="pay-balance"]').setAttribute('aria-selected', String(method === 'balance'));
+    $('[data-e="pay-points"]').setAttribute('aria-selected', String(method === 'points'));
   };
 
-  sheet.querySelector('[data-e="cover"]').innerHTML = coverHTML(ev.category);
-  sheet.querySelector('[data-e="tag"]').textContent = CATEGORY_LABEL[ev.category] || '';
-  sheet.querySelector('[data-e="tag"]').className = `tag ${style}`;
-  sheet.querySelector('[data-e="title"]').textContent = ev.titleAr;
-  sheet.querySelector('[data-e="sub"]').textContent = ev.titleEn || '';
-  sheet.querySelector('[data-e="date"]').textContent = fmtDayHeading(ev.date);
-  sheet.querySelector('[data-e="time"]').textContent = ev.time;
-  sheet.querySelector('[data-e="venue"]').textContent = `${ev.venue}، ${ev.district}`;
-  sheet.querySelector('[data-e="desc"]').textContent = ev.desc || '';
+  $('[data-e="cover"]').innerHTML = coverHTML(ev.category);
+  $('[data-e="tag"]').textContent = CATEGORY_LABEL[ev.category] || '';
+  $('[data-e="tag"]').className = `tag ${style}`;
+  $('[data-e="title"]').textContent = ev.titleAr;
+  $('[data-e="sub"]').textContent = ev.titleEn || '';
+  $('[data-e="date"]').textContent = fmtDayHeading(ev.date);
+  $('[data-e="time"]').textContent = ev.time;
+  $('[data-e="venue"]').textContent = `${ev.venue}، ${ev.district}`;
+  $('[data-e="desc"]').textContent = ev.desc || '';
   const mapQ = ev.mapQuery || `${ev.venue}, Riyadh, Saudi Arabia`;
-  const mapEl = sheet.querySelector('[data-e="map"]');
+  const mapEl = $('[data-e="map"]');
   if (mapEl) {
     mapEl.innerHTML = `<iframe title="خريطة ${ev.venue}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="${mapEmbedSrc(mapQ)}"></iframe>`;
   }
-  const mapLink = sheet.querySelector('[data-e="map-link"]');
+  const mapLink = $('[data-e="map-link"]');
   if (mapLink) mapLink.href = mapLinkSrc(mapQ);
-  sheet.querySelector('[data-e="price"]').innerHTML = `<b>${enDigits(ev.price)}</b> <small>ر.س</small>`;
-  sheet.querySelector('[data-e="balance"]').innerHTML = `الرصيد الحالي: <b>${enDigits(Math.floor(state.balance))} ر.س</b>`;
+  $('[data-e="price"]').innerHTML = `<b>${enDigits(ev.price)}</b> <small>ر.س</small>`;
   qty = 1;
+  method = 'balance';
   rerender();
 
-  const dec = sheet.querySelector('[data-e="dec"]');
-  const inc = sheet.querySelector('[data-e="inc"]');
-  const confirmBtn = sheet.querySelector('[data-e="confirm"]');
+  const dec = $('[data-e="dec"]');
+  const inc = $('[data-e="inc"]');
+  const confirmBtn = $('[data-e="confirm"]');
 
-  const decHandler = () => { if (qty > 1) { qty--; rerender(); } };
-  const incHandler = () => { if (qty < 8) { qty++; rerender(); } };
-  const confirmHandler = async () => {
+  dec.onclick = () => { if (qty > 1) { qty--; rerender(); } };
+  inc.onclick = () => { if (qty < 8) { qty++; rerender(); } };
+  $('[data-e="pay-balance"]').onclick = () => { method = 'balance'; rerender(); };
+  $('[data-e="pay-points"]').onclick  = () => { method = 'points';  rerender(); };
+
+  confirmBtn.onclick = async () => {
     if (!requireAuth('للحجز، يرجى تسجيل الدخول أولاً')) return;
-    const cost = total();
-    if (state.balance < cost) {
+    // Client-side pre-check so the user gets an instant response.
+    if (method === 'balance' && state.balance < totalSAR()) {
       toast('الرصيد غير كافٍ لإتمام الحجز', 'error');
       const row = sheet.querySelector('[data-e="balance-row"]');
-      if (row) {
-        row.style.borderColor = 'var(--coral-ink)';
-        setTimeout(() => { row.style.borderColor = ''; }, 1200);
-      }
+      if (row) { row.style.borderColor = 'var(--coral-ink)'; setTimeout(() => { row.style.borderColor = ''; }, 1200); }
+      return;
+    }
+    if (method === 'points' && state.points < totalPoints()) {
+      toast('نقاطك غير كافية لإتمام الحجز', 'error');
+      const row = sheet.querySelector('[data-e="balance-row"]');
+      if (row) { row.style.borderColor = 'var(--coral-ink)'; setTimeout(() => { row.style.borderColor = ''; }, 1200); }
       return;
     }
     setBusy(confirmBtn, true);
     try {
-      const { balance, points, bookingId } = await api.bookEvent(ev.id, qty);
+      const { balance, points, bookingId } = await api.bookEvent(ev.id, qty, method);
       state.balance = balance;
       state.points = points;
       state.bookings.unshift({
         id: bookingId,
         event_id: ev.id,
         quantity: qty,
-        total_paid: cost,
-        points_earned: ev.points * qty,
+        total_paid: method === 'balance' ? totalSAR() : 0,
+        points_earned: method === 'balance' ? earned() : 0,
         status: 'confirmed',
         created_at: new Date().toISOString()
       });
       refreshAll();
       closeSheet(sheet);
-      toast(`تم الحجز بنجاح • أُضيفت ${enDigits(ev.points * qty)} نقطة`);
+      toast(method === 'balance'
+        ? `تم الحجز بنجاح • أُضيفت ${enDigits(earned())} نقطة`
+        : `تم الحجز بالنقاط بنجاح • ${enDigits(totalPoints())} نقطة`);
     } catch (e) {
       toast(friendlyError(e), 'error');
     } finally {
       setBusy(confirmBtn, false);
     }
   };
-
-  // replace listeners cleanly
-  dec.onclick = decHandler;
-  inc.onclick = incHandler;
-  confirmBtn.onclick = confirmHandler;
 
   openSheet(sheet);
 }
@@ -1652,17 +1730,30 @@ function injectSharedSheets() {
             <button class="qty-btn" data-e="inc" aria-label="زيادة">${ICONS.plus}</button>
           </div>
         </div>
-        <div class="hstack mt-8" style="justify-content:space-between">
+
+        <!-- Payment method selector: balance (SAR) or points -->
+        <div class="pay-method" role="tablist" aria-label="طريقة الدفع">
+          <button class="pay-opt is-active" data-e="pay-balance" data-pay="balance" role="tab" aria-selected="true">
+            <span class="pay-ic">${ICONS.wallet}</span>
+            <span class="pay-lbl">دفع بالرصيد</span>
+          </button>
+          <button class="pay-opt" data-e="pay-points" data-pay="points" role="tab" aria-selected="false">
+            <span class="pay-ic">${ICONS.star}</span>
+            <span class="pay-lbl">دفع بالنقاط</span>
+          </button>
+        </div>
+
+        <div class="hstack mt-12" style="justify-content:space-between">
           <span style="color:var(--ink-3);font-size:13px">المجموع</span>
           <span style="font-weight:800" data-e="total">— ر.س</span>
         </div>
-        <div class="hstack" style="justify-content:space-between">
+        <div class="hstack" data-e="earn-row" style="justify-content:space-between">
           <span style="color:var(--ink-3);font-size:13px">تكسب</span>
           <span style="font-weight:800;color:var(--teal-ink)" data-e="pts-total">+—</span>
         </div>
         <div class="balance-row" data-e="balance-row">
           <span data-e="balance">الرصيد الحالي: <b>—</b></span>
-          <button class="btn btn-outline" style="min-height:36px;padding:0 12px" data-open="recharge">شحن</button>
+          <button class="btn btn-outline" data-e="topup-btn" style="min-height:36px;padding:0 12px" data-open="recharge">شحن</button>
         </div>
         <button class="btn btn-primary btn-block sheet-cta" data-e="confirm">احجز الآن</button>
       </div>
@@ -1694,17 +1785,29 @@ function injectSharedSheets() {
             <button class="qty-btn" data-p="inc" aria-label="زيادة">${ICONS.plus}</button>
           </div>
         </div>
-        <div class="hstack mt-8" style="justify-content:space-between">
+
+        <div class="pay-method" role="tablist" aria-label="طريقة الدفع">
+          <button class="pay-opt is-active" data-p="pay-balance" data-pay="balance" role="tab" aria-selected="true">
+            <span class="pay-ic">${ICONS.wallet}</span>
+            <span class="pay-lbl">دفع بالرصيد</span>
+          </button>
+          <button class="pay-opt" data-p="pay-points" data-pay="points" role="tab" aria-selected="false">
+            <span class="pay-ic">${ICONS.star}</span>
+            <span class="pay-lbl">دفع بالنقاط</span>
+          </button>
+        </div>
+
+        <div class="hstack mt-12" style="justify-content:space-between">
           <span style="color:var(--ink-3);font-size:13px">المجموع</span>
           <span style="font-weight:800" data-p="total">— ر.س</span>
         </div>
-        <div class="hstack" style="justify-content:space-between">
+        <div class="hstack" data-p="earn-row" style="justify-content:space-between">
           <span style="color:var(--ink-3);font-size:13px">تكسب</span>
           <span style="font-weight:800;color:var(--teal-ink)" data-p="pts-total">+—</span>
         </div>
         <div class="balance-row">
           <span data-p="balance">الرصيد الحالي: <b>—</b></span>
-          <button class="btn btn-outline" style="min-height:36px;padding:0 12px" data-open="recharge">شحن</button>
+          <button class="btn btn-outline" data-p="topup-btn" style="min-height:36px;padding:0 12px" data-open="recharge">شحن</button>
         </div>
         <button class="btn btn-primary btn-block sheet-cta" data-p="confirm">احجز الباقة</button>
       </div>

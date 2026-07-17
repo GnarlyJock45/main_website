@@ -2033,6 +2033,41 @@ svg {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Payment method selector inside booking sheets */
+.pay-method {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.pay-opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  min-height: 44px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1.5px solid transparent;
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 13px;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.pay-opt .pay-ic {
+  display: inline-flex;
+  color: currentColor;
+}
+.pay-opt:hover:not(.is-active) {
+  background: var(--surface-3);
+}
+.pay-opt.is-active {
+  background: var(--teal-050);
+  border-color: var(--teal);
+  color: var(--teal-ink);
+}
+
 /* Filter banner (shown above events list when a URL filter is active) */
 .filter-banner {
   margin: 0 20px 12px;

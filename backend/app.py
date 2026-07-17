@@ -595,55 +595,78 @@ def rpc_recharge():
     return jsonify({"new_balance": row["balance"]})
 
 
-@app.post("/api/rpc/book_event")
-def rpc_book_event():
-    uid = require_user()
-    body = request.get_json(silent=True) or {}
-    try:
-        event_id = int(body.get("event_id"))
-        quantity = int(body.get("quantity"))
-    except (TypeError, ValueError):
-        return bad("invalid parameters")
-    if not (1 <= quantity <= 20):
-        return bad("invalid_quantity")
+# 1 SAR = 10 points (matches the "تعادل X ر.س" hint on the wallet card).
+POINTS_PER_SAR = 10
+
+
+def _validate_method(m):
+    return m if m in ("balance", "points") else None
+
+
+def _do_booking(uid, quantity, method, sar_price, points_per_unit,
+                event_id=None, package_id=None):
+    """Shared logic for booking an event OR a package. Returns a Flask response.
+    - balance mode: charges SAR from wallet, credits earned points
+    - points mode: charges (price × qty × 10) points, no new points earned
+    """
+    total_sar = float(sar_price) * quantity
+    total_points_cost = int(round(total_sar * POINTS_PER_SAR))
+    earned = int(points_per_unit) * quantity if method == "balance" else 0
 
     db = get_db()
     with db:
         db.execute("BEGIN IMMEDIATE")
         try:
-            event = db.execute(
-                "select price, points from events where id = ?", (event_id,)).fetchone()
-            if not event:
-                db.execute("ROLLBACK")
-                return bad("event_not_found", 404)
-            total = float(event["price"]) * quantity
-            earned = int(event["points"]) * quantity
-
             wallet = db.execute(
-                "select balance from wallets where user_id = ?", (uid,)).fetchone()
+                "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
             if not wallet:
                 db.execute("ROLLBACK")
                 return bad("wallet_missing", 500)
-            if float(wallet["balance"]) < total:
-                db.execute("ROLLBACK")
-                return bad("insufficient_balance", 400)
 
-            db.execute(
-                """update wallets set balance = balance - ?,
-                                     points  = points  + ?,
-                                     updated_at = ?
-                   where user_id = ?""",
-                (total, earned, now_iso(), uid))
+            if method == "balance":
+                if float(wallet["balance"]) < total_sar:
+                    db.execute("ROLLBACK")
+                    return bad("insufficient_balance", 400)
+                db.execute(
+                    """update wallets set balance = balance - ?,
+                                         points  = points  + ?,
+                                         updated_at = ?
+                       where user_id = ?""",
+                    (total_sar, earned, now_iso(), uid))
+                txn_kind = "booking"
+                txn_amount = total_sar          # what was charged
+                txn_points_delta = earned       # what was earned
+            else:  # points
+                if int(wallet["points"]) < total_points_cost:
+                    db.execute("ROLLBACK")
+                    return bad("insufficient_points", 400)
+                db.execute(
+                    """update wallets set points = points - ?,
+                                         updated_at = ?
+                       where user_id = ?""",
+                    (total_points_cost, now_iso(), uid))
+                txn_kind = "points_redeem"
+                txn_amount = 0                  # no money moved
+                txn_points_delta = -total_points_cost
+
             booking_id = new_uuid()
+            # For a points booking, total_paid=0 (nothing charged in SAR).
+            recorded_paid = total_sar if method == "balance" else 0.0
             db.execute(
-                """insert into bookings (id, user_id, event_id, quantity, total_paid, points_earned)
-                   values (?, ?, ?, ?, ?, ?)""",
-                (booking_id, uid, event_id, quantity, total, earned))
+                """insert into bookings (id, user_id, event_id, package_id, quantity,
+                                        total_paid, points_earned)
+                   values (?, ?, ?, ?, ?, ?, ?)""",
+                (booking_id, uid, event_id, package_id, quantity, recorded_paid, earned))
+            meta = {"qty": quantity, "method": method}
+            if event_id is not None:   meta["event_id"] = event_id
+            if package_id is not None: meta["package_id"] = package_id
+            if method == "points":     meta["points_spent"] = total_points_cost
             db.execute(
-                """insert into transactions (id, user_id, kind, amount, points_delta, ref_booking_id, meta)
-                   values (?, ?, 'booking', ?, ?, ?, ?)""",
-                (new_uuid(), uid, total, earned, booking_id,
-                 json.dumps({"event_id": event_id, "qty": quantity})))
+                """insert into transactions (id, user_id, kind, amount, points_delta,
+                                            ref_booking_id, meta)
+                   values (?, ?, ?, ?, ?, ?, ?)""",
+                (new_uuid(), uid, txn_kind, txn_amount, txn_points_delta,
+                 booking_id, json.dumps(meta)))
             new_row = db.execute(
                 "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
             db.execute("COMMIT")
@@ -655,6 +678,31 @@ def rpc_book_event():
         "new_balance": new_row["balance"],
         "new_points": new_row["points"],
     })
+
+
+@app.post("/api/rpc/book_event")
+def rpc_book_event():
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    try:
+        event_id = int(body.get("event_id"))
+        quantity = int(body.get("quantity"))
+    except (TypeError, ValueError):
+        return bad("invalid parameters")
+    if not (1 <= quantity <= 20):
+        return bad("invalid_quantity")
+    method = _validate_method(body.get("payment_method") or "balance")
+    if not method:
+        return bad("invalid_payment_method")
+
+    event = get_db().execute(
+        "select price, points from events where id = ?", (event_id,)).fetchone()
+    if not event:
+        return bad("event_not_found", 404)
+
+    return _do_booking(uid, quantity, method,
+                       sar_price=event["price"], points_per_unit=event["points"],
+                       event_id=event_id)
 
 
 @app.post("/api/rpc/book_package")
@@ -668,55 +716,18 @@ def rpc_book_package():
         return bad("invalid parameters")
     if not (1 <= quantity <= 20):
         return bad("invalid_quantity")
+    method = _validate_method(body.get("payment_method") or "balance")
+    if not method:
+        return bad("invalid_payment_method")
 
-    db = get_db()
-    with db:
-        db.execute("BEGIN IMMEDIATE")
-        try:
-            pkg = db.execute(
-                "select price, points from packages where id = ?", (package_id,)).fetchone()
-            if not pkg:
-                db.execute("ROLLBACK")
-                return bad("package_not_found", 404)
-            total = float(pkg["price"]) * quantity
-            earned = int(pkg["points"]) * quantity
+    pkg = get_db().execute(
+        "select price, points from packages where id = ?", (package_id,)).fetchone()
+    if not pkg:
+        return bad("package_not_found", 404)
 
-            wallet = db.execute(
-                "select balance from wallets where user_id = ?", (uid,)).fetchone()
-            if not wallet:
-                db.execute("ROLLBACK")
-                return bad("wallet_missing", 500)
-            if float(wallet["balance"]) < total:
-                db.execute("ROLLBACK")
-                return bad("insufficient_balance", 400)
-
-            db.execute(
-                """update wallets set balance = balance - ?,
-                                     points  = points  + ?,
-                                     updated_at = ?
-                   where user_id = ?""",
-                (total, earned, now_iso(), uid))
-            booking_id = new_uuid()
-            db.execute(
-                """insert into bookings (id, user_id, package_id, quantity, total_paid, points_earned)
-                   values (?, ?, ?, ?, ?, ?)""",
-                (booking_id, uid, package_id, quantity, total, earned))
-            db.execute(
-                """insert into transactions (id, user_id, kind, amount, points_delta, ref_booking_id, meta)
-                   values (?, ?, 'booking', ?, ?, ?, ?)""",
-                (new_uuid(), uid, total, earned, booking_id,
-                 json.dumps({"package_id": package_id, "qty": quantity})))
-            new_row = db.execute(
-                "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
-            db.execute("COMMIT")
-        except Exception:
-            db.execute("ROLLBACK")
-            raise
-    return jsonify({
-        "booking_id": booking_id,
-        "new_balance": new_row["balance"],
-        "new_points": new_row["points"],
-    })
+    return _do_booking(uid, quantity, method,
+                       sar_price=pkg["price"], points_per_unit=pkg["points"],
+                       package_id=package_id)
 
 
 # --------------------------------------------------------------------------- #
