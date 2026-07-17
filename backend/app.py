@@ -53,7 +53,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
 
-from flask import Flask, g, jsonify, request
+from flask import Flask, g, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
 
 # --------------------------------------------------------------------------- #
@@ -61,6 +61,10 @@ from flask_cors import CORS
 # --------------------------------------------------------------------------- #
 
 BASE_DIR = Path(__file__).parent
+# The frontend lives one level up (repo root), assuming Render's "Root Directory"
+# is set to "backend" (so the whole repo is at BASE_DIR.parent).
+FRONTEND_DIR = BASE_DIR.parent
+
 DB_PATH_ENV = os.environ.get("AZWA_DB_PATH")
 # Fallback chain: env var (if set and writable) → alongside app.py → /tmp.
 # Resolved lazily so we can log which one we picked.
@@ -247,31 +251,52 @@ def row_to_dict(row: sqlite3.Row | None) -> dict | None:
 # Endpoints
 # --------------------------------------------------------------------------- #
 
-@app.get("/")
-def root():
-    """Landing page for the API — makes it obvious the service is up when
-    someone visits the bare Render URL instead of a specific /api/* endpoint."""
-    return {
-        "service": "azwa-api",
-        "status": "ok",
-        "time": now_iso(),
-        "endpoints": [
-            "/api/health",
-            "/api/session/init (POST, needs X-User-Id)",
-            "/api/events",
-            "/api/packages",
-            "/api/profile", "/api/wallet", "/api/cards",
-            "/api/bookings", "/api/transactions", "/api/favorites",
-            "/api/rpc/recharge", "/api/rpc/book_event", "/api/rpc/book_package",
-        ],
-        "note": "Client identity is a UUID sent via the X-User-Id request header. "
-                "This is an API-only service; the frontend lives elsewhere.",
-    }
-
-
 @app.get("/api/health")
 def health():
     return {"ok": True, "time": now_iso()}
+
+
+# ---------- Frontend static serving ----------
+# Serves the HTML/CSS/JS/assets from the repo root (one level above this
+# file). Lets a single Render service host both the API and the site so
+# users only need one URL.
+
+# Files at the frontend root the browser might ask for by exact name.
+_FRONTEND_PAGES = {"index.html", "cards.html", "calendar.html",
+                   "events.html", "map.html", "more.html"}
+# Directories under the repo root that hold static assets.
+_STATIC_DIRS = ("assets", "images", "js", "css")
+
+
+def _serve_frontend(rel: str):
+    """Send a file from FRONTEND_DIR, but only if it exists and is a real file
+    (prevents directory traversal + accidentally serving app.py)."""
+    if not rel:
+        rel = "index.html"
+    full = (FRONTEND_DIR / rel).resolve()
+    try:
+        full.relative_to(FRONTEND_DIR.resolve())
+    except ValueError:
+        abort(404)
+    if not full.is_file():
+        abort(404)
+    return send_from_directory(FRONTEND_DIR, rel)
+
+
+@app.get("/")
+def index():
+    return _serve_frontend("index.html")
+
+
+@app.get("/<path:filename>")
+def frontend_file(filename: str):
+    # Only serve known top-level pages or files under whitelisted static dirs.
+    if filename in _FRONTEND_PAGES:
+        return _serve_frontend(filename)
+    top = filename.split("/", 1)[0]
+    if top in _STATIC_DIRS:
+        return _serve_frontend(filename)
+    abort(404)
 
 
 @app.errorhandler(500)
@@ -286,7 +311,10 @@ def _internal_error(err):
 
 @app.errorhandler(404)
 def _not_found(_err):
-    return jsonify({"error": "not_found", "message": "Try / for the list of endpoints."}), 404
+    return jsonify({
+        "error": "not_found",
+        "message": "Unknown path. Frontend pages: /, /cards.html, /events.html, /map.html, /calendar.html, /more.html. API: /api/*."
+    }), 404
 
 
 # ---------- Session ----------
