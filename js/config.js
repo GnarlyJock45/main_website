@@ -10,4 +10,4 @@ const isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].includes(location.host
 
 export const BACKEND_URL = isLocalhost
   ? 'http://localhost:5000'
-  : 'https://azwa-hackathon.onrender.com/';
+  : 'https://azwa-hackathon.onrender.com';
