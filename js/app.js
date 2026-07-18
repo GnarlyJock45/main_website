@@ -2278,24 +2278,72 @@ function wireMoreButtons() {
 
 async function showTicketsSheet() {
   const bookings = await api.loadBookings();
+  renderTicketsSheet(bookings);
+}
+
+// Rendered separately so the cancel handler can re-render in place without
+// re-fetching from the server (bookings list is small, we already know the new state).
+function renderTicketsSheet(bookings) {
   const body = bookings.length
     ? bookings.map(b => {
         const title = b.event_title || b.package_title || 'حجز';
         const when = b.created_at ? new Date(b.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('ar-SA') : '';
         const kind = b.package_id ? 'باقة' : 'فعالية';
+        // Was this a points booking? total_paid=0 + points_earned=0 tells us.
+        // (matches how _do_booking records points-paid rows)
+        const paidByPoints = Number(b.total_paid) === 0 && Number(b.points_earned) === 0;
+        const priceLine = paidByPoints
+          ? `<span style="font-weight:800;font-size:13px;color:var(--teal-ink)">مدفوع بالنقاط</span>`
+          : `<span style="font-weight:800;font-size:13px">${enDigits(b.total_paid)} <small>ر.س</small></span>`;
+        const earnBadge = paidByPoints
+          ? ''
+          : `<span class="badge">+${enDigits(b.points_earned)} نقطة</span>`;
         return `
-          <div class="menu-row" style="cursor:default">
-            <span class="ic-wrap" style="background:var(--teal-050);color:var(--teal-ink)">${ICONS.ticket}</span>
-            <div>
-              <div style="font-weight:700;font-size:14px">${title}</div>
-              <div style="font-size:12px;color:var(--ink-3)">${kind} • ${b.quantity} × • ${when}</div>
+          <div class="ticket-row">
+            <div class="ticket-main">
+              <span class="ic-wrap" style="background:var(--teal-050);color:var(--teal-ink)">${ICONS.ticket}</span>
+              <div class="ticket-body">
+                <div class="ticket-title">${title}</div>
+                <div class="ticket-meta">${kind} • ${b.quantity} × • ${when}</div>
+              </div>
+              ${priceLine}
+              ${earnBadge}
             </div>
-            <span style="font-weight:800;font-size:13px">${enDigits(b.total_paid)} <small>ر.س</small></span>
-            <span class="badge">+${enDigits(b.points_earned)} نقطة</span>
+            <button class="ticket-cancel" data-cancel-booking="${b.id}" type="button">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M6 18L18 6"/></svg>
+              <span>إلغاء واسترداد</span>
+            </button>
           </div>`;
       }).join('')
     : `<div class="empty" style="padding:24px 0">${ICONS.ticket}<div>لا توجد تذاكر بعد</div><div style="font-size:12px;color:var(--ink-4);margin-top:4px">اذهب إلى صفحة الفعاليات وابدأ الحجز.</div></div>`;
-  openListSheet('تذاكري', `${bookings.length} تذكرة`, `<div class="menu-list">${body}</div>`);
+
+  openListSheet('تذاكري', `${bookings.length} تذكرة`, `<div class="ticket-list">${body}</div>`);
+
+  // Wire cancel buttons
+  document.querySelectorAll('[data-cancel-booking]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.cancelBooking;
+      if (!confirm('إلغاء هذه التذكرة واسترداد قيمتها؟')) return;
+      setBusy(btn, true);
+      try {
+        const { balance, points, refundedAmount, refundedPoints } = await api.cancelBooking(id);
+        state.balance = balance;
+        state.points = points;
+        state.bookings = state.bookings.filter(x => x.id !== id);
+        refreshAll();
+        const msg = refundedAmount > 0
+          ? `تم الاسترداد • +${enDigits(refundedAmount)} ر.س`
+          : `تم الاسترداد • +${enDigits(refundedPoints)} نقطة`;
+        toast(msg);
+        // Re-render the sheet with the updated list.
+        renderTicketsSheet(state.bookings);
+      } catch (e) {
+        toast(friendlyError(e), 'error');
+      } finally {
+        setBusy(btn, false);
+      }
+    });
+  });
 }
 
 async function showFavoritesSheet() {

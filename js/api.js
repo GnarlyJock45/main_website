@@ -282,6 +282,20 @@ export async function bookEvent(eventId, quantity, paymentMethod = 'balance') {
   };
 }
 
+// Cancel a booking (refund). Returns the updated wallet + refund amounts.
+export async function cancelBooking(bookingId) {
+  const r = await request('/api/rpc/cancel_booking', {
+    method: 'POST',
+    body: { booking_id: bookingId },
+  });
+  return {
+    balance: Number(r.new_balance),
+    points: Number(r.new_points),
+    refundedAmount: Number(r.refunded_amount || 0),
+    refundedPoints: Number(r.refunded_points || 0),
+  };
+}
+
 export async function bookPackage(packageId, quantity, paymentMethod = 'balance') {
   const r = await request('/api/rpc/book_package', {
     method: 'POST',

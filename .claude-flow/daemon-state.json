@@ -1,55 +1,55 @@
 {
   "running": true,
-  "startedAt": "2026-07-17T13:40:34.638Z",
+  "startedAt": "2026-07-18T10:08:04.164Z",
   "workers": {
     "map": {
-      "runCount": 31,
-      "successCount": 31,
+      "runCount": 34,
+      "successCount": 34,
       "failureCount": 0,
-      "averageDurationMs": 3.2903225806451615,
-      "lastRun": "2026-07-17T20:10:34.986Z",
-      "lastStartedAt": "2026-07-17T20:10:34.983Z",
-      "nextRun": "2026-07-17T20:25:34.987Z",
+      "averageDurationMs": 5.735294117647059,
+      "lastRun": "2026-07-18T10:08:04.171Z",
+      "lastStartedAt": "2026-07-18T10:08:04.169Z",
+      "nextRun": "2026-07-18T10:23:04.172Z",
       "isRunning": false
     },
     "audit": {
-      "runCount": 45,
-      "successCount": 45,
+      "runCount": 48,
+      "successCount": 48,
       "failureCount": 0,
-      "averageDurationMs": 4.022222222222221,
-      "lastRun": "2026-07-17T20:22:35.132Z",
-      "lastStartedAt": "2026-07-17T20:22:35.130Z",
-      "nextRun": "2026-07-17T20:22:35.117Z",
+      "averageDurationMs": 3.9999999999999987,
+      "lastRun": "2026-07-18T10:10:04.180Z",
+      "lastStartedAt": "2026-07-18T10:10:04.176Z",
+      "nextRun": "2026-07-18T10:10:04.165Z",
       "isRunning": false
     },
     "optimize": {
-      "runCount": 30,
-      "successCount": 30,
+      "runCount": 32,
+      "successCount": 32,
       "failureCount": 0,
-      "averageDurationMs": 5.966666666666667,
-      "lastRun": "2026-07-17T20:14:34.995Z",
-      "lastStartedAt": "2026-07-17T20:14:34.993Z",
-      "nextRun": "2026-07-17T20:29:34.996Z",
+      "averageDurationMs": 5.71875,
+      "lastRun": "2026-07-17T21:36:45.849Z",
+      "lastStartedAt": "2026-07-17T21:36:45.847Z",
+      "nextRun": "2026-07-18T10:12:04.165Z",
       "isRunning": false
     },
     "consolidate": {
-      "runCount": 16,
-      "successCount": 16,
+      "runCount": 17,
+      "successCount": 17,
       "failureCount": 0,
-      "averageDurationMs": 7.687499999999999,
-      "lastRun": "2026-07-17T20:16:34.812Z",
-      "lastStartedAt": "2026-07-17T20:16:34.806Z",
-      "nextRun": "2026-07-17T20:46:34.813Z",
+      "averageDurationMs": 7.647058823529412,
+      "lastRun": "2026-07-17T21:36:45.875Z",
+      "lastStartedAt": "2026-07-17T21:36:45.868Z",
+      "nextRun": "2026-07-18T10:14:04.165Z",
       "isRunning": false
     },
     "testgaps": {
-      "runCount": 22,
-      "successCount": 22,
+      "runCount": 24,
+      "successCount": 24,
       "failureCount": 0,
-      "averageDurationMs": 2.727272727272727,
-      "lastRun": "2026-07-17T20:08:34.906Z",
-      "lastStartedAt": "2026-07-17T20:08:34.903Z",
-      "nextRun": "2026-07-17T20:28:34.907Z",
+      "averageDurationMs": 2.7499999999999996,
+      "lastRun": "2026-07-17T21:36:45.882Z",
+      "lastStartedAt": "2026-07-17T21:36:45.878Z",
+      "nextRun": "2026-07-18T10:16:04.166Z",
       "isRunning": false
     },
     "backup": {
@@ -59,7 +59,7 @@
       "averageDurationMs": 6,
       "lastRun": "2026-07-16T21:46:01.391Z",
       "lastStartedAt": "2026-07-16T21:46:01.385Z",
-      "nextRun": "2026-07-17T21:46:01.391Z",
+      "nextRun": "2026-07-18T10:18:04.166Z",
       "isRunning": false
     },
     "harness": {
@@ -69,7 +69,7 @@
       "averageDurationMs": 90.66666666666667,
       "lastRun": "2026-07-17T19:52:34.758Z",
       "lastStartedAt": "2026-07-17T19:52:34.751Z",
-      "nextRun": "2026-07-18T01:52:34.760Z",
+      "nextRun": "2026-07-18T10:20:04.166Z",
       "isRunning": false
     },
     "predict": {
@@ -89,8 +89,8 @@
   },
   "config": {
     "autoStart": false,
-    "logDir": "d:\\06-Projects\\13-amad_hackathon\\main_website\\.claude-flow\\logs",
-    "stateFile": "d:\\06-Projects\\13-amad_hackathon\\main_website\\.claude-flow\\daemon-state.json",
+    "logDir": "D:\\06-Projects\\13-amad_hackathon\\main_website\\.claude-flow\\logs",
+    "stateFile": "D:\\06-Projects\\13-amad_hackathon\\main_website\\.claude-flow\\daemon-state.json",
     "maxConcurrent": 2,
     "workerTimeoutMs": 960000,
     "resourceThresholds": {
@@ -175,5 +175,5 @@
       }
     ]
   },
-  "savedAt": "2026-07-17T20:22:35.132Z"
+  "savedAt": "2026-07-18T10:10:04.180Z"
 }

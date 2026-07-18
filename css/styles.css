@@ -2033,6 +2033,66 @@ svg {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Tickets list in the "my tickets" sheet — one row per booking with an
+   inline cancel-and-refund action underneath. */
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ticket-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.ticket-main {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+.ticket-main .ic-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ticket-body { min-width: 0; }
+.ticket-title {
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ticket-meta {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.ticket-cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--coral-ink);
+  background: var(--coral-bg);
+  border: 0;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+.ticket-cancel:hover { background: #FFDCCF; }
+.ticket-cancel:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* Payment method selector inside booking sheets */
 .pay-method {
   display: grid;

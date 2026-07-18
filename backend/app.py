@@ -680,6 +680,90 @@ def _do_booking(uid, quantity, method, sar_price, points_per_unit,
     })
 
 
+@app.post("/api/rpc/cancel_booking")
+def rpc_cancel_booking():
+    """Un-book (refund) a previous booking.
+
+    - If the booking was paid with SAR: refund total_paid to the wallet balance,
+      and subtract points_earned (capped at 0) so the user doesn't get to keep
+      loyalty points from a cancelled ticket.
+    - If the booking was paid with points: refund the exact points spent
+      (from the original transaction's meta) back into the points wallet.
+
+    Deletes the booking row; the original booking transaction stays for audit
+    (its ref_booking_id becomes NULL via ON DELETE SET NULL), and a new
+    'refund' transaction is inserted.
+    """
+    uid = require_user()
+    body = request.get_json(silent=True) or {}
+    booking_id = str(body.get("booking_id") or "").strip()
+    if not booking_id:
+        return bad("missing booking_id")
+
+    db = get_db()
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        try:
+            booking = db.execute(
+                """select id, total_paid, points_earned, event_id, package_id
+                   from bookings where id = ? and user_id = ?""",
+                (booking_id, uid)).fetchone()
+            if not booking:
+                db.execute("ROLLBACK")
+                return bad("booking_not_found", 404)
+
+            # Look up the original transaction to know which method was used.
+            txn = db.execute(
+                """select kind, amount, points_delta, meta
+                   from transactions
+                   where ref_booking_id = ? and kind in ('booking','points_redeem')
+                   order by created_at asc limit 1""",
+                (booking_id,)).fetchone()
+
+            if txn and txn["kind"] == "points_redeem":
+                # points-paid: points_delta was negative — flip the sign to refund.
+                refund_amount = 0.0
+                refund_points = abs(int(txn["points_delta"]))
+                db.execute(
+                    """update wallets set points = points + ?, updated_at = ?
+                       where user_id = ?""",
+                    (refund_points, now_iso(), uid))
+            else:
+                # balance-paid (or missing txn — fall back to booking row).
+                refund_amount = float(booking["total_paid"])
+                earned = int(booking["points_earned"])
+                refund_points = -earned  # negative delta on the refund txn
+                db.execute(
+                    """update wallets
+                       set balance = balance + ?,
+                           points  = max(0, points - ?),
+                           updated_at = ?
+                       where user_id = ?""",
+                    (refund_amount, earned, now_iso(), uid))
+
+            db.execute("delete from bookings where id = ?", (booking_id,))
+
+            db.execute(
+                """insert into transactions (id, user_id, kind, amount, points_delta, meta)
+                   values (?, ?, 'refund', ?, ?, ?)""",
+                (new_uuid(), uid, refund_amount, refund_points,
+                 json.dumps({"cancelled_booking": booking_id})))
+
+            new_row = db.execute(
+                "select balance, points from wallets where user_id = ?", (uid,)).fetchone()
+            db.execute("COMMIT")
+        except Exception:
+            db.execute("ROLLBACK")
+            raise
+
+    return jsonify({
+        "new_balance": new_row["balance"],
+        "new_points": new_row["points"],
+        "refunded_amount": refund_amount,
+        "refunded_points": refund_points,
+    })
+
+
 @app.post("/api/rpc/book_event")
 def rpc_book_event():
     uid = require_user()
